@@ -1,5 +1,3 @@
-# dStruct is now being maintained and supported by Aviran lab alumnus, Krishna Choudhary. Please visit [https://github.com/dataMaster-Kris/dStruct](https://github.com/dataMaster-Kris/dStruct) for updates and to report issues. This repository contains the code for the initial release of dStruct reported in our [publication](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1641-3).
-
 # dStruct
 
 Method for identifying differential reactive regions from RNA structurome profiling data.
@@ -50,10 +48,3 @@ For other options available in dStruct package, refer the dStruct manual or emai
 ## Citation
 
 Choudhary K., Lai Y.H., Tran E., Aviran S. (2019) "dStruct: identifying differentially reactive regions from RNA structurome profiling data."
-
-## Contributors
-
-* [Krishna Choudhary](https://www.linkedin.com/in/datamaster/) - _Initial implementation and developer_
-* [Sharon Aviran](https://aviranlab.bme.ucdavis.edu/) - _Supervisor_
-
-
