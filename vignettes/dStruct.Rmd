@@ -1,28 +1,90 @@
 ---
-title: "Differential analysis of RNA structurome profiling data using `dStruct`"
-author: "Krishna Choudhary"
+title: "Differential RNA structurome analysis using `dStruct`"
+author: 
+- name: Krishna Choudhary
+  affiliation: University of California, San Francisco, USA
+  email: kchoudhary@ucdavis.edu
+- name: Sharon Aviran
+  affiliation: University of California, Davis, USA
 package: dStruct
 output: 
-  BiocStyle::html_document
+  BiocStyle::html_document:
+    toc_float: true
+  BiocStyle::pdf_document: default
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: "`r file.path(system.file('extdata', package = 'dStruct'), 'refs.bib')`"
+abstract: > 
+  <p> A large variety of RNA molecules exist in cells. They adopt diverse structures to serve important cellular functions. In the last decade, a number of deep sequencing-based technologies have been developed to study RNA structures at a genome-wide scale, at high resolution, and in vivo or in vitro. These technologies generate large-scale and highly noisy data. A common goal in many studies utilizing such data is to compare RNA structuromes under two or more conditions, and identify RNAs or regions thereof that may have altered structures between the conditions. 
+  <p>`dStruct`: dStruct is a package meant for **d**ifferential analysis of RNA **Struct**urome profiling data [@choudhary2019dStruct]. It is broadly applicable to all existing technologies for RNA structurome profiling. It accounts for inherent biological variation in structuromes between replicate samples and returns differential regions. Here, we describe the input data format required by dStruct, provide use cases, and discuss various options for analysis and visualization. Additionally, we highlight the assumptions underlying dStruct and discuss its current limitations.
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+<style type="text/css">
+.smaller {
+  font-size: 15px
+}
+</style>
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(BiocStyle)
 ```
 
-## R Markdown
+*** 
+
+For details on the methods presented here, consider having a look at our manuscript:
+
+> Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019). dStruct: identifying differentially reactive regions from RNA structurome profiling data. Genome Biology, 20(1), 1-26. doi: [10.1186/s13059-019-1641-3](https://doi.org/10.1186/s13059-019-1641-3)
+
+# Load package {-}
+```{r load-libs, message = FALSE,  warning = FALSE}
+library(dStruct)
+```
+
+# Introduction
+
+dStruct is broadly applicable to technologies for RNA structurome profiling, e.g., SHAPE-Seq, Structure-Seq, PARS, SHAPE-MaP, etc. In the rawest form, these technologies generate data in the form of reads from DNA sequencing platforms. The start sites of read alignment coordinates are adjacent to sites of reactions of ribonucleotides with a structure-probing reagent. For some technologies, the sites of mismatches between reads and the reference sequences are sites of reactions, e.g., SHAPE-MaP and DMS-MaPseq. The counts of reads mapping to the nucleotides of an RNA should be tallied and converted to reactivities, which represent the degrees of reactions. The specific steps to process data from sequencing reads to reactivities depend on the structurome profiling technology. For a review on structurome profiling technologies, see [@choudhary2017comparative]. dStruct takes nucleotide-level normalized reactivities of one or multiple RNAs as input. In the following, we assume that the user has normalized reactivities for their RNAs of interest. 
+
+# Input data
+
+## Load inbuilt sample data
+
+## Format your own data
+	
+# Differential analysis
+	
+## Identifying individual DRRs
 
 ```{r}
-data(lai2019)
+# res <- dStructome(rl, 3, 2, batches= T, min_length = 21,
+#                   between_combs = data.frame(c("A3", "B1", "B2")),
+#                   within_combs = data.frame(c("A1", "A2", "A3")),
+#                   ind_regions = TRUE)
 ```
 
+## Hypothesis test at the transcript level
+
+## Accounting for batch effects
+
+## Proximity assisted
+
+## Determining minimum length
+
+## Other options
+
+## Guided differential analysis
+
+# Visualizing results
+
+# Assumptions
+
+# Current limitations
+
+# Session Information
+
 ```{r}
-res <- dStructome(rl, 3, 2, batches= T, min_length = 21,
-                  between_combs = data.frame(c("A3", "B1", "B2")),
-                  within_combs = data.frame(c("A1", "A2", "A3")),
-                  ind_regions = TRUE)
+sessionInfo()
 ```
+
+# References
