@@ -37,7 +37,7 @@ For details on the methods presented here, consider having a look at our manuscr
 
 > Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019). dStruct: identifying differentially reactive regions from RNA structurome profiling data. Genome Biology, 20(1), 1-26. doi: [10.1186/s13059-019-1641-3](https://doi.org/10.1186/s13059-019-1641-3)
 
-# Load package {-}
+# Load packages {-}
 
 The following code chunk loads the `dStruct` and `tidyverse` packages. We use `tidyverse` for cleaner code presentation in this vignette. 
 
@@ -48,15 +48,17 @@ library(tidyverse)
 
 # Introduction
 
-dStruct is broadly applicable to technologies for RNA structurome profiling, e.g., SHAPE-Seq, Structure-Seq, PARS, SHAPE-MaP, etc. In the rawest form, these technologies generate data in the form of reads from DNA sequencing platforms. The start sites of read alignment coordinates are adjacent to sites of reactions of ribonucleotides with a structure-probing reagent. For some technologies, the sites of mismatches between reads and the reference genome sequences are sites of reactions, e.g., SHAPE-MaP and DMS-MaPseq. The counts of reads mapping to the nucleotides of an RNA should be tallied and converted to reactivities, which represent the degrees of reactions. The specific steps to process data from sequencing reads to reactivities depend on the structurome profiling technology. For a review on structurome profiling technologies and methods for assessing reactivities, see Choudhary et al. 2017. dStruct takes nucleotide-level normalized reactivities of one or multiple RNAs as input. In the following, we assume that the user has processed the raw reads to obtain normalized reactivities for their RNAs of interest. 
+dStruct is broadly applicable to technologies for RNA structurome profiling, e.g., SHAPE-Seq, Structure-Seq, PARS, SHAPE-MaP, etc. In the rawest form, these technologies generate data in the form of reads from DNA sequencing platforms. The start sites of read alignment coordinates are adjacent to sites of reactions of ribonucleotides with a structure-probing reagent. For some technologies, the sites of mismatches between reads and the reference genome sequences are sites of reactions, e.g., SHAPE-MaP and DMS-MaPseq. The counts of reads mapping to the nucleotides of an RNA should be tallied and converted to reactivities, which represent the degrees of reactions. The specific steps to process data from sequencing reads to reactivities depend on the structurome profiling technology. For a review on structurome profiling technologies and methods for assessing reactivities, see Choudhary et al. 2017. 
+
+dStruct takes nucleotide-level normalized reactivities of one or multiple RNAs as input. In the following, we assume that the user has processed the raw reads to obtain normalized reactivities for their RNAs of interest. 
 
 # Input data
 
-The input data to dStruct is an R `list` object. Each element of the `list` should be a `data.frame` containing normalized reactivities. 
+The input data to dStruct is a `list` object. Each element of the `list` should be a `data.frame` containing normalized reactivities. 
 
 ## Load inbuilt sample data
 
-We have provided two test datasets with this package. These are derived from experiments described in Lai et al. 2019 and Wan et al. 2014. As described in the section on differential analysis below, we use these to illustrate de novo and guided discovery use cases, respectively. To start with, let us examine the data structure required for input. 
+We have provided two test datasets with this package. These are derived from experiments described in @lai2019genome and @wan2014landscape. As described in the section on differential analysis below, we use these to illustrate de novo and guided discovery use cases, respectively. To start with, let us examine the data structure required for input. 
 
 The Lai et al. data can be loaded as follows.
 
@@ -86,41 +88,81 @@ All elements of `rl` have the same structure. Let us check one of them.
 class(rl[[1]])
 ```
 
-## Use your own data
-	
-# Differential analysis
-	
-## Identifying individual DRRs
+```{r}
+head(rl[["YAL042W"]], n= 20)
+```
 
+Each row of the above `data.frame` has the reactivity for one nucleotide of the RNA with id `"YAL042W"` and each column is one sample. Consecutive rows must represent consecutive nucleotides. `NA` values represent unavailable reactivities. If the data were generated using base-selective reagents (e.g., DMS used by Lai et al.), `dStruct` expects that the reactivities of unprobed bases will be masked as `NA` before running the differential analysis. 
+
+Currently, `dStruct` supports comparisons of samples from two conditions at a time.  The prefixes `A` and `B` in the columns of each `data.frame` of `rl` stand for the two conditions. It is required that the conditions be labeled as `A` and `B` because `dStruct` will be looking for these internally. The numeric suffixes in the column names are replicate sample numbers. These must start with `1` and increase in steps of 1. If the samples were prepared in batches with each batch having one sample of each group, the corresponding samples should be given the same numeric suffix. 
+
+# Differential analysis
+
+Differential analysis can be performed for multiple RNAs in one step or a single RNA at a time. Additionally, we allow for two modes of analysis, one to identify differentially reactive regions de novo, and another called as guided discovery to assess the significance of differences in reactivities in the regions provided by the user. 
+
+## De novo discovery
+
+The function `dStruct` analyzes reactivity profiles for a single transcript to identify differential regions de novo. Additionally, we provide a wrapper function called `dStructome` which can analyze profiles for multiple transcripts simultaneously. For example, a single transcript, say `YAL042W`, can be analyzed as follows.
+
+```{r}
+dStruct(rdf = rl[["YAL042W"]],
+        reps_A = 3, reps_B = 2,
+        batches = TRUE, min_length = 21, 
+        between_combs = data.frame(c("A3", "B1", "B2")),
+        within_combs = data.frame(c("A1", "A2", "A3")),
+        ind_regions = TRUE)
+```
+The arguments `rdf`, `reps_A` and `reps_B` of the `dStruct` function are required while the others are optional. These take in a `data.frame` with reactivity values, the number of samples of group A (group of wild-type *S. cerevisiae* samples), and the number of samples of group B (group of *dbp2$\Delta$ S. cerevisiae* samples), respectively. Set `batches` to `TRUE` if the samples were prepared in batches with a paired experiment design, i.e., two samples in each batch -- one of each group. `min_length` is the minimum length of a differential region that `dStruct` would search for. For the Lai et al. dataset, we set it to 21 nt because that is the putative length of regions bound by Dbp2, which was the RNA helicase under investigation in their study. As described in our manuscript, `dStruct` performs differential analysis by regrouping the samples in homogeneous and heterogeneous groups and assessing the dissimilarity of reactivity profiles in these groups. The homogeneous groups comprise of samples from the same original group (e.g., A or B) while the heterogeneous groups comprise of samples from both A and B, respectively (see @choudhary2019dstruct for details). Users can explicitly specify these groupings to the `dStruct` function as shown in the example above. Otherwise, `dStruct` would automatically generate the homogeneous and heterogeneous groups. Setting `ind_regions` to `TRUE` requires test for significance of difference in reactivity patterns in individual regions. If it is set to `FALSE` all regions identified within a transcript are tested collectively to obtain significance scores at the level of a transcript. 
+
+Alternatively, all transcripts in a reactivity list can be analyzed in one step using the wrapper function `dStructome`.
+```{r}
+res <- dStructome(rl, 3, 2, batches= T, min_length = 21,
+                  between_combs = data.frame(c("A3", "B1", "B2")),
+                  within_combs = data.frame(c("A1", "A2", "A3")),
+                  ind_regions = TRUE)
+```
+This returns a table with the coordinates of regions in transcripts with the corresponding *p*- and FDR-values.
+```{r}
+head(res)
+```
+
+## Guided discovery
+
+The function `dStruct.guided` tests for differential reactivity profiles of pre-defined regions. Additionally, the wrapper function `dStructome` can analyze profiles for multiple regions simultaneously when its argument `method = "guided"`. 
+
+We illustrate this mode of running `dStruct` using PARS data from @wan2014landscape. We downloaded the data reported in their manuscript and processed it to get PARS profiles as described in @choudhary2019dstruct.
+
+```{r}
+# dStruct(rdf = rl[["YAL042W"]],
+#         reps_A = 3, reps_B = 2,
+#         batches = TRUE, min_length = 21, 
+#         between_combs = data.frame(c("A3", "B1", "B2")),
+#         within_combs = data.frame(c("A1", "A2", "A3")),
+#         ind_regions = TRUE)
+```
+The arguments `rdf`, `reps_A` and `reps_B` of the `dStruct` function are required while the others are optional. These take in a `data.frame` with reactivity values, the number of samples of group A (group of wild-type *S. cerevisiae* samples), and the number of samples of group B (group of *dbp2$\Delta$ S. cerevisiae* samples), respectively. Set `batches` to `TRUE` if the samples were prepared in batches with a paired experiment design, i.e., two samples in each batch -- one of each group. `min_length` is the minimum length of a differential region that `dStruct` would search for. For the Lai et al. dataset, we set it to 21 nt because that is the putative length of regions bound by Dbp2, which was the RNA helicase under investigation in their study. As described in our manuscript, `dStruct` performs differential analysis by regrouping the samples in homogeneous and heterogeneous groups and assessing the dissimilarity of reactivity profiles in these groups. The homogeneous groups comprise of samples from the same original group (e.g., A or B) while the heterogeneous groups comprise of samples from both A and B, respectively (see @choudhary2019dstruct for details). Users can explicitly specify these groupings to the `dStruct` function as shown in the example above. Otherwise, `dStruct` would automatically generate the homogeneous and heterogeneous groups. Setting `ind_regions` to `TRUE` requires test for significance of difference in reactivity patterns in individual regions. If it is set to `FALSE` all regions identified within a transcript are tested collectively to obtain significance scores at the level of a transcript. 
+
+Alternatively, all transcripts in a reactivity list can be analyzed in one step using the wrapper function `dStructome`.
 ```{r}
 # res <- dStructome(rl, 3, 2, batches= T, min_length = 21,
 #                   between_combs = data.frame(c("A3", "B1", "B2")),
 #                   within_combs = data.frame(c("A1", "A2", "A3")),
 #                   ind_regions = TRUE)
 ```
-
-## Hypothesis test at the transcript level
-
-## Accounting for batch effects
-
-## Proximity assisted
-
-## Determining minimum length
-
-## Other options
-
-## Guided differential analysis
+This returns a table with the coordinates of regions in transcripts with the corresponding *p*- and FDR-values.
+```{r}
+head(res)
+```
+ 
 
 # Visualizing results
 
-# Assumptions
+Use the results table to plot reactivities. 
 
-# Current limitations
-
-# Session Information
+# Session Information {-}
 
 ```{r}
 sessionInfo()
 ```
 
-# References
+# References {-}
