@@ -27,13 +27,13 @@ dStruct.guided <- function(rdf, reps_A, reps_B, batches = F,
   if (median(d_between - d_within, na.rm = T) < evidence) return(c(NA, NA))
 
   result <- tryCatch({
-    c(wilcox.test(d_within, d_between, 
+    c(pval = wilcox.test(d_within, d_between, 
                   alternative = "less", paired= T)$p.value,
-      median(d_between - d_within, na.rm = TRUE)
+      del_d = median(d_between - d_within, na.rm = TRUE)
     )
   }, error= function(e) {
     #Place holder for those transcripts that can't be tested due to error.
-    result = c(NA, NA)
+    result = c(pval = NA, del_d= NA)
   })
 
   return(result)
