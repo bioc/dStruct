@@ -19,7 +19,7 @@
 #' @param proximity_assisted Logical, if TRUE, proximally located regions are tested together.
 #' @param proximity Maximum distance between constructed regions for them to be considered proximal.
 #' @param proximity_defined_length If performing a "proximity-assisted" test, minimum end-to-end length of a region to be tested.
-#' @return Constructs regions, reports p-values and FDR for them.
+#' @return Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
 #' @export
 dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
                        check_signal_strength = T, check_nucs = T, check_quality = T,
@@ -50,8 +50,12 @@ dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
                      within_combs, between_combs, check_quality,
                      quality, evidence)
     }, rl, mc.cores=processes)
-
-    res_df = data.frame(t = names(rl), pval = result)
+    
+    pvals = result[1, ]
+    names(pvals) = NULL
+    del_d = result[2, ]
+    names(del_d) = NULL
+    res_df = data.frame(t = names(rl), pval = pvals, del_d = del_d)
     res_df = subset(res_df, !is.na(pval))
     res_df$FDR = p.adjust(res_df$pval, "BH")
 
@@ -67,7 +71,7 @@ dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
     }, rl, mc.cores=processes, SIMPLIFY = F)
 
     if (ind_regions) {
-      res_df = data.frame(t= NA, Start= NA, Stop = NA, pval= NA)
+      res_df = data.frame(t= NA, Start= NA, Stop = NA, pval= NA, del_d = NA)
       for (i in 1:length(result)) {
         if (is.null(result[[i]])) next
         res_df = rbind(res_df, data.frame(t= names(result)[i], result[[i]]))
@@ -77,20 +81,22 @@ dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
       res_df$FDR = p.adjust(res_df$pval, "BH")
     } else {
       res_df = data.frame(t= NA, Start= NA, Stop = NA)
-      pvals = data.frame(t= NA, pval= NA)
+      pvals_and_del_d = data.frame(t= NA, pval= NA, del_d = NA)
       for (i in 1:length(result)) {
         if (is.null(result[[i]])) next
-        pvals = rbind(pvals, data.frame(t =  names(result)[i], pval = result[[i]]$pval), stringsAsFactors= F)
+        pvals_and_del_d = rbind(pvals, data.frame(t =  names(result)[i], pval = result[[i]]$pval,
+                                        del_d = result[[i]]$del_d), stringsAsFactors= F)
         res_df = rbind(res_df, data.frame(t= names(result)[i], result[[i]]$regions))
       }
 
-      pvals = pvals[-1, ]
+      pvals_and_del_d = pvals_and_del_d[-1, ]
       res_df = res_df[-1, ]
 
-      pvals$FDR = p.adjust(pvals$pval, "BH")
+      pvals_and_del_d$FDR = p.adjust(pvals_and_del_d$pval, "BH")
 
-      res_df$pval = apply(res_df, 1, function(x) subset(pvals, t == as.character(x[1]))$pval)
-      res_df$FDR = apply(res_df, 1, function(x) subset(pvals, t == as.character(x[1]))$FDR)
+      res_df$pval = apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$pval)
+      res_df$del_d = apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$del_d)
+      res_df$FDR = apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$FDR)
     }
   }
 

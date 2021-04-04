@@ -4,10 +4,12 @@
 #' @param outfile The name for pdf file which will be saved.
 #' @param fdr FDR threshold for plotted regions.
 #' @param ylim Y-axis limits for plots.
+#' @param del_d_cutoff Minimum effect size for plotted regions specified in terms of median difference of the between-group and within-group d-scores.
 #' @return Saves a PDF for all differentially reactive regions. Returns NULL.
 #' @export
-plot_dStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.05, 3)) {
-  diff_regions = subset(diff_regions, FDR < fdr)
+plot_dStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.05, 3),
+                              del_d_cutoff = 0.01) {
+  diff_regions = subset(diff_regions, FDR < fdr, del_d > del_d_cutoff)
   diff_t = unique(diff_regions$t)
 
   pdf(paste0(outfile, ".pdf"), width=7,height=6)

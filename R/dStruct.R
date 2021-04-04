@@ -18,7 +18,7 @@
 #' @param proximity_assisted Logical, if TRUE, proximally located regions are tested together.
 #' @param proximity Maximum distance between constructed regions for them to be considered proximal.
 #' @param proximity_defined_length If performing a "proximity-assisted" test, minimum end-to-end length of a region to be tested.
-#' @return Constructs regions, reports p-values and FDR for them.
+#' @return Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
 #' @export
 dStruct <- function(rdf, reps_A, reps_B, batches = F, min_length = 11,
                     check_signal_strength = T, check_nucs = T, check_quality = T,
@@ -26,62 +26,69 @@ dStruct <- function(rdf, reps_A, reps_B, batches = F, min_length = 11,
                     within_combs = NULL, between_combs= NULL, ind_regions = T, gap = 1,
                     get_FDR = T, proximity_assisted = F, proximity = 10,
                     proximity_defined_length = 30) {
-
+  
   if ((quality == "auto") & min(c(reps_A, reps_B)) != 1) quality = 0.5 else if (quality == "auto") quality = 0.2
   if (is.null(between_combs) | is.null(within_combs)) idcombs = getCombs(reps_A, reps_B, batches,
                                                                          between_combs, within_combs)
   if (is.null(between_combs)) between_combs = idcombs$between_combs
   if (is.null(within_combs)) within_combs = idcombs$within_combs
-
+  
   d_within = dCombs(rdf, within_combs)
   d_between = dCombs(rdf, between_combs)
-
+  
   to_test = getRegions(d_within, d_between, rdf, min_length,
                        check_signal_strength, check_nucs, check_quality,
                        quality, evidence, signal_strength)
-
+  
   if (is.null(to_test) | !length(to_test)) return(NULL)
-
+  
   contigs_test = getContigRegions(to_test, gap)
-
+  
   if (!ind_regions & !proximity_assisted) {
-
+    
     result <- tryCatch({
-      wilcox.test(d_within[to_test], d_between[to_test],
-                  alternative = "less", paired= T)$p.value
+      c(wilcox.test(d_within[to_test], d_between[to_test],
+                    alternative = "less", paired= T)$p.value,
+        median(d_between[to_test] - d_within[to_test],
+               na.rm = TRUE))
     }, error= function(e) {
       #Place holder for those transcripts that can't be tested due to insufficient data points.
-      result = NA
+      result = c(NA, NA)
     })
-
-    result = list(regions= contigs_test, pval = result)
-
+    
+    result = list(regions= contigs_test, pval = result[1], 
+                  del_d = result[2])
+    
   } else if (!proximity_assisted) {
-
+    
     pvals = c()
+    del_d = c()
     for (i in 1:nrow(contigs_test)) {
       curr_res = tryCatch({
-        wilcox.test(d_within[contigs_test$Start[i]:contigs_test$Stop[i]],
-                    d_between[contigs_test$Start[i]:contigs_test$Stop[i]],
-                    alternative = "less", paired= T)$p.value
-
+        c(wilcox.test(d_within[contigs_test$Start[i]:contigs_test$Stop[i]],
+                      d_between[contigs_test$Start[i]:contigs_test$Stop[i]],
+                      alternative = "less", paired= T)$p.value,
+          median(d_between[contigs_test$Start[i]:contigs_test$Stop[i]] -
+                   d_within[contigs_test$Start[i]:contigs_test$Stop[i]],
+                 na.rm = TRUE))
+        
       }, error= function(e) {
         #Place holder for those transcripts that can't be tested due to insufficient data points.
-        result = NA
+        result = c(NA, NA)
       })
-      pvals = c(pvals, curr_res)
-
-
+      pvals = c(pvals, curr_res[1])
+      del_d = c(del_d, curr_res[2])
+      
     }
-
-    contigs_test = cbind(contigs_test, pval = pvals)
+    
+    contigs_test = cbind(contigs_test, pval = pvals, del_d = del_d)
     if (get_FDR) contigs_test = cbind(contigs_test, FDR = p.adjust(pvals, "BH"))
     result = contigs_test
   } else {
-
+    
     proximal_contigs = which(contigs_test$Start[-1]-
                                contigs_test$Stop[-nrow(contigs_test)] < proximity)+1
-
+    
     if (length(proximal_contigs)) {
       proximally_tied_regs = getContigRegions(proximal_contigs)
       proximally_tied_regs$Start = proximally_tied_regs$Start-1
@@ -92,31 +99,35 @@ dStruct <- function(rdf, reps_A, reps_B, batches = F, min_length = 11,
     } else {
       non_proximal = 1:nrow(contigs_test)
     }
-
+    
     which_too_short = apply(contigs_test[non_proximal, ], 1,
                             function(x) x[2]- x[1] + 1 < proximity_defined_length)
-
+    
     pvals = c()
+    del_d = c()
     for (i in non_proximal) {
-
+      
       curr_nucs = contigs_test$Start[i]:contigs_test$Stop[i]
       if (length(curr_nucs) < proximity_defined_length) {
-        curr_res = NA
+        curr_res = c(NA, NA)
       } else {
         curr_res = tryCatch({
-          wilcox.test(d_within[curr_nucs],
-                      d_between[curr_nucs],
-                      alternative = "less", paired= T)$p.value
-
+          c(wilcox.test(d_within[curr_nucs],
+                        d_between[curr_nucs],
+                        alternative = "less", paired= T)$p.value,
+            median(d_between[curr_nucs] - d_within[curr_nucs],
+                   na.rm = TRUE))
+          
         }, error= function(e) {
           #Place holder for those transcripts that can't be tested due to insufficient data points.
-          result = NA
+          result = c(NA, NA)
         })
       }
-
-      pvals = c(pvals, curr_res)
+      
+      pvals = c(pvals, curr_res[1])
+      del_d = c(del_d, curr_res[2])
     }
-
+    
     if (length(proximal_contigs)) {
       proximity_defined_regs = list(Start = c(), Stop = c())
       for (i in 1:nrow(proximally_tied_regs)) {
@@ -124,38 +135,41 @@ dStruct <- function(rdf, reps_A, reps_B, batches = F, min_length = 11,
         curr_nucs = unlist(apply(curr, 1,
                                  function(x) x[1]:x[2]))
         curr_length = max(curr_nucs) - min(curr_nucs) + 1
-
+        
         if (curr_length >= proximity_defined_length) {
           curr_res = tryCatch({
-            wilcox.test(d_within[curr_nucs],
+            c(wilcox.test(d_within[curr_nucs],
                         d_between[curr_nucs],
-                        alternative = "less", paired= T)$p.value
-
+                        alternative = "less", paired= T)$p.value,
+            median(d_between[curr_nucs] - d_within[curr_nucs], 
+                   na.rm = TRUE))
+            
           }, error= function(e) {
             #Place holder for those transcripts that can't be tested due to insufficient data points.
-            result = NA
+            result = c(NA, NA)
           })
         } else {
-          curr_res = NA
+          curr_res = c(NA, NA)
         }
-
+        
         # print(paste(curr$Start, collapse = ","))
         proximity_defined_regs$Start = c(proximity_defined_regs$Start,
                                          paste(curr$Start, collapse = ","))
         proximity_defined_regs$Stop = c(proximity_defined_regs$Stop,
                                         paste(curr$Stop, collapse = ","))
-        pvals = c(pvals, curr_res)
+        pvals = c(pvals, curr_res[1])
+        del_d = c(del_d, curr_res[2])
       }
-
+      
       contigs_test = rbind(contigs_test[non_proximal, ],
                            as.data.frame(proximity_defined_regs))
     }
-
-    contigs_test = cbind(contigs_test, pval = pvals)
+    
+    contigs_test = cbind(contigs_test, pval = pvals, del_d = del_d)
     if (get_FDR) contigs_test = cbind(contigs_test, FDR = p.adjust(pvals, "BH"))
     result = contigs_test
   }
-
+  
   return(result)
-
+  
 }

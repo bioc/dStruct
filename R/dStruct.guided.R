@@ -8,7 +8,7 @@
 #' @param check_quality Logical, if TRUE, check regions for quality.
 #' @param quality Worst allowed quality for a region to be tested.
 #' @param evidence Minimum evidence of increase in variation from within-group comparisons to between-group comparisons for a region to be tested.
-#' @return p-value for the tested region, estimated using one-sided Wilcoxon signed rank test.
+#' @return p-value for the tested region (estimated using one-sided Wilcoxon signed rank test) and the median of nucleotide-wise difference of between-group and within-group d-scores.
 #' @export
 dStruct.guided <- function(rdf, reps_A, reps_B, batches = F,
                            within_combs = NULL, between_combs= NULL, check_quality = TRUE,
@@ -23,14 +23,17 @@ dStruct.guided <- function(rdf, reps_A, reps_B, batches = F,
   d_within = dCombs(rdf, within_combs)
   d_between = dCombs(rdf, between_combs)
 
-  if (mean(d_within, na.rm = T) > quality) return(NA)
-  if (median(d_between - d_within, na.rm = T) < evidence) return(NA)
+  if (mean(d_within, na.rm = T) > quality) return(c(NA, NA))
+  if (median(d_between - d_within, na.rm = T) < evidence) return(c(NA, NA))
 
   result <- tryCatch({
-    wilcox.test(d_within, d_between, alternative = "less", paired= T)$p.value
+    c(wilcox.test(d_within, d_between, 
+                  alternative = "less", paired= T)$p.value,
+      median(d_between - d_within, na.rm = TRUE)
+    )
   }, error= function(e) {
     #Place holder for those transcripts that can't be tested due to error.
-    result = NA
+    result = c(NA, NA)
   })
 
   return(result)
