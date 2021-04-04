@@ -58,6 +58,7 @@ dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
     res_df = data.frame(t = names(rl), pval = pvals, del_d = del_d)
     res_df = subset(res_df, !is.na(pval))
     res_df$FDR = p.adjust(res_df$pval, "BH")
+    rownames(res_df) = NULL
 
   } else if (method == "denovo") {
 
