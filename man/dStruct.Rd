@@ -4,12 +4,27 @@
 \alias{dStruct}
 \title{Performs de novo discovery of differentially reactive regions.}
 \usage{
-dStruct(rdf, reps_A, reps_B, batches = F, min_length = 11,
-  check_signal_strength = T, check_nucs = T, check_quality = T,
-  quality = "auto", evidence = 0, signal_strength = 0.1,
-  within_combs = NULL, between_combs = NULL, ind_regions = T, gap = 1,
-  get_FDR = T, proximity_assisted = F, proximity = 10,
-  proximity_defined_length = 30)
+dStruct(
+  rdf,
+  reps_A,
+  reps_B,
+  batches = F,
+  min_length = 11,
+  check_signal_strength = T,
+  check_nucs = T,
+  check_quality = T,
+  quality = "auto",
+  evidence = 0,
+  signal_strength = 0.1,
+  within_combs = NULL,
+  between_combs = NULL,
+  ind_regions = T,
+  gap = 1,
+  get_FDR = T,
+  proximity_assisted = F,
+  proximity = 10,
+  proximity_defined_length = 30
+)
 }
 \arguments{
 \item{rdf}{Dataframe of reactivities for each sample.}
@@ -51,7 +66,7 @@ dStruct(rdf, reps_A, reps_B, batches = F, min_length = 11,
 \item{proximity_defined_length}{If performing a "proximity-assisted" test, minimum end-to-end length of a region to be tested.}
 }
 \value{
-Constructs regions, reports p-values and FDR for them.
+Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
 }
 \description{
 Performs de novo discovery of differentially reactive regions.

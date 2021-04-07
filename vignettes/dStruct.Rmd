@@ -116,12 +116,12 @@ dStruct(rdf = rl[["YAL042W"]],
 
 **Output.** Columns of the result table give the start (column titled *Start*) and end (column titled *Stop*) coordinates of the tested regions from the transcript whose reactivity profile is input, *p*-values, medians of nucleotide-wise differences of the between-group and within-group *d* scores (column titled *del_d*), and the FDR-adjusted *p*-values.
 
-Alternatively, all transcripts in a reactivity list can be analyzed in one step using the wrapper function `dStructome`.
+Alternatively, all transcripts in a reactivity list can be analyzed in one step using the wrapper function `dStructome`. By default, `dStructome` spawns multiple processes, which speeds up the analysis by processing transcripts in parallel. This behavior can be changed using the argument `processes` as shown in the following code chunk.
 ```{r}
 res <- dStructome(rl, 3, 2, batches= T, min_length = 21,
                   between_combs = data.frame(c("A3", "B1", "B2")),
                   within_combs = data.frame(c("A1", "A2", "A3")),
-                  ind_regions = TRUE)
+                  ind_regions = TRUE, processes = 1)
 ```
 This returns a table with the coordinates of regions in transcripts with the corresponding *p*- and FDR-values.
 ```{r}
@@ -158,7 +158,8 @@ dStruct.guided(rl_predefined_regs[[1]],
 `dStruct.guided` returns a *p*-value for significance of differential PARS scores in the input region and the median of nucleotide-wise differences of the between-group and within-group *d* scores. Alternatively, all regions in `rl_predefined_regs` can be analyzed in one step using the wrapper function `dStructome`.
 ```{r}
 res_predefined_regs <- dStructome(rl_predefined_regs, 
-                                  reps_A = 2, reps_B = 1, method = "guided")
+                                  reps_A = 2, reps_B = 1, method = "guided", 
+                                  processes = 1)
 ```
 This returns a table with the coordinates of regions in transcripts with the corresponding *p*- and FDR-values.
 ```{r}

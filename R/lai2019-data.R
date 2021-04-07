@@ -19,4 +19,4 @@
 #'
 #' @examples
 #' data(lai2019)
-"lai2019"
+NULL

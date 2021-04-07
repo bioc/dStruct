@@ -67,7 +67,8 @@ test_that("Previous result is reproduced in guided mode", {
                                         0.09140625))
 
   nowResult <- dStructome(rl_predefined_regs,
-                          reps_A = 2, reps_B = 1, method = "guided")
+                          reps_A = 2, reps_B = 1, method = "guided",
+                          processes = 1)
 
   apply(cbind(previous_result$t, nowResult$t),
         1,

@@ -18,4 +18,4 @@
 #'
 #' @examples
 #' data(wan2014)
-"wan2014"
+NULL
