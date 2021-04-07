@@ -1,0 +1,14 @@
+citHeader("To cite the dStruct package in publications use:")
+
+citEntry(entry="Article",
+         title = "dStruct: identifying differentially reactive regions from RNA structurome profiling data",
+         author = personList(as.person("Krishna Choudhary"), as.person("Yu-Hsuan Lai"), as.person("Elizabeth J. Tran"), as.person("Sharon Aviran")),
+         year         = 2019,
+	 volume       = 20,
+    	 number	      = 40,
+         url          = "https://doi.org/10.1186/s13059-019-1641-3",
+	 Journal      = "Genome Biology",
+         textVersion = 
+         paste("Choudhary, K., Lai, YH., Tran, E. J., Aviran, S.", 
+               "dStruct: identifying differentially reactive regions from RNA structurome profiling data.",
+               "Genome Biology, 20, 40 (2019). https://doi.org/10.1186/s13059-019-1641-3"))
