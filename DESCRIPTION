@@ -2,7 +2,7 @@ Package: dStruct
 Type: Package
 Title: Identifying differentially reactive regions from RNA structurome profiling data
 Version: 0.99.0
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.0)
 Author: Krishna Choudhary <kchoudhary@ucdavis.edu>
 Maintainer: Krishna Choudhary <kchoudhary@ucdavis.edu>
 Authors@R: c(
@@ -31,4 +31,3 @@ Suggests:
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-
