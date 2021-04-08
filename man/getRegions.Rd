@@ -38,6 +38,9 @@ getRegions(
 
 \item{signal_strength}{Threshold for minimum signal strength.}
 }
+\value{
+Integer vector of nucleotides that constitute potential differentially reactive regions.
+}
 \description{
 Constructs potential differentially reactive regions.
 }

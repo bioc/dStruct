@@ -9,6 +9,7 @@
 #' @param quality Worst allowed quality for a region to be tested.
 #' @param evidence Minimum evidence of increase in variation from within-group comparisons to between-group comparisons for a region to be tested.
 #' @param signal_strength Threshold for minimum signal strength.
+#' @return Integer vector of nucleotides that constitute potential differentially reactive regions.
 #' @export
 getRegions <- function(d_within, d_spec, rdf, min_length= 11,
                        check_signal_strength = TRUE, check_nucs = TRUE, check_quality = TRUE,
