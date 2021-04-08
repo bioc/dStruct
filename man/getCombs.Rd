@@ -7,7 +7,7 @@
 getCombs(
   reps_A,
   reps_B,
-  batches = F,
+  batches = FALSE,
   between_combs = NULL,
   within_combs = NULL
 )
@@ -28,4 +28,8 @@ List of two dataframes, containing groupings for within-group and between-group 
 }
 \description{
 Identifies subgroupings of replicates for assessing within-group and between-group variation.
+}
+\examples{
+#Get heterogeneous and homogeneous set combinations of samples when there are 2 samples of group A and 1 of group B.
+getCombs(2, 1)
 }

@@ -15,3 +15,6 @@ The normalization factor.
 \description{
 Assesses normalization factor for raw reactivities using 2-8 \% method.
 }
+\examples{
+normalizer(c(NA, rnorm(20, 0.5, 0.3), NA, -999))
+}

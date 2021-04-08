@@ -15,3 +15,8 @@ If input is a numeric vector, a number is returned. For a matrix, a numeric vect
 \description{
 Calculates d score.
 }
+\examples{
+#Lower standard deviation of reactivites results in lower d-score.
+calcDis(rnorm(10, 1, 0.2))
+calcDis(rnorm(10, 1, 0.6))
+}

@@ -9,9 +9,9 @@ getRegions(
   d_spec,
   rdf,
   min_length = 11,
-  check_signal_strength = T,
-  check_nucs = T,
-  check_quality = T,
+  check_signal_strength = TRUE,
+  check_nucs = TRUE,
+  check_quality = TRUE,
   quality = 0.5,
   evidence = 0,
   signal_strength = 0.1

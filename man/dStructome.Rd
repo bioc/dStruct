@@ -8,21 +8,21 @@ dStructome(
   rl,
   reps_A,
   reps_B,
-  batches = F,
+  batches = FALSE,
   min_length = 11,
-  check_signal_strength = T,
-  check_nucs = T,
-  check_quality = T,
+  check_signal_strength = TRUE,
+  check_nucs = TRUE,
+  check_quality = TRUE,
   quality = "auto",
   evidence = 0,
   signal_strength = 0.1,
   within_combs = NULL,
   between_combs = NULL,
-  ind_regions = T,
+  ind_regions = TRUE,
   gap = 1,
   processes = "auto",
   method = "denovo",
-  proximity_assisted = F,
+  proximity_assisted = FALSE,
   proximity = 10,
   proximity_defined_length = 30
 )
@@ -73,4 +73,20 @@ Constructs regions, reports p-value and median difference of between-group and w
 }
 \description{
 Performs de novo discovery of differentially reactive regions for transcriptome-wide data.
+}
+\examples{
+#Load data from Lai et al., 2019
+data(lai2019)
+
+#Run dStruct in de novo discovery mode for all the transcripts in this data in one step.
+dStructome(lai2019, 3, 2, batches= TRUE, min_length = 21,
+    between_combs = data.frame(c("A3", "B1", "B2")),
+    within_combs = data.frame(c("A1", "A2", "A3")),
+    ind_regions = TRUE, processes = 1)
+
+#Load data from Wan et al., 2014
+data(wan2014)
+
+#Run dStruct in guide discovery mode for all the transcript regions in this data in one step.
+dStructome(wan2014, reps_A = 2, reps_B = 1, method = "guided", processes = 1)
 }

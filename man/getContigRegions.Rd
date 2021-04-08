@@ -17,3 +17,11 @@ Dataframe storing start and stop sites of continguous regions.
 \description{
 Identifies contiguous regions from a list of nucleotide indices.
 }
+\examples{
+#Convert an integer vector of nucleotide positions to a data frame containing the coordinates of contiguous regions.
+nucleotide_positions <- c(1, 3, 2, 8, 4:7, 11:20)
+getContigRegions(nucleotide_positions)
+
+#Merge regions if their end points are within 3 nt of each other.
+getContigRegions(nucleotide_positions, gap = 3)
+}

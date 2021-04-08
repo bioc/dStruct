@@ -8,20 +8,20 @@ dStruct(
   rdf,
   reps_A,
   reps_B,
-  batches = F,
+  batches = FALSE,
   min_length = 11,
-  check_signal_strength = T,
-  check_nucs = T,
-  check_quality = T,
+  check_signal_strength = TRUE,
+  check_nucs = TRUE,
+  check_quality = TRUE,
   quality = "auto",
   evidence = 0,
   signal_strength = 0.1,
   within_combs = NULL,
   between_combs = NULL,
-  ind_regions = T,
+  ind_regions = TRUE,
   gap = 1,
-  get_FDR = T,
-  proximity_assisted = F,
+  get_FDR = TRUE,
+  proximity_assisted = FALSE,
   proximity = 10,
   proximity_defined_length = 30
 )
@@ -70,4 +70,15 @@ Constructs regions, reports p-value and median difference of between-group and w
 }
 \description{
 Performs de novo discovery of differentially reactive regions.
+}
+\examples{
+#Load data from Lai et al., 2019
+data(lai2019)
+
+#Run dStruct in de novo discovery mode for a transcript with id YAL042W.
+dStruct(rdf = lai2019[["YAL042W"]], reps_A = 3, reps_B = 2,
+    batches = TRUE, min_length = 21,
+    between_combs = data.frame(c("A3", "B1", "B2")),
+    within_combs = data.frame(c("A1", "A2", "A3")),
+    ind_regions = TRUE)
 }

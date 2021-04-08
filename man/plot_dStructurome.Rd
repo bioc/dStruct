@@ -32,3 +32,20 @@ Saves a PDF for all differentially reactive regions. Returns NULL.
 \description{
 Plots differentially reactive regions.
 }
+\examples{
+#Load data from Lai et al., 2019
+data(lai2019)
+
+#Run dStruct in de novo discovery mode for all the transcripts in this data in one step.
+res <- dStructome(lai2019, 3, 2, batches= TRUE, min_length = 21,
+    between_combs = data.frame(c("A3", "B1", "B2")),
+    within_combs = data.frame(c("A1", "A2", "A3")),
+    ind_regions = TRUE, processes = 1)
+
+#Plot the significant results and save to a PDF file.
+plot_dStructurome(rl = lai2019,
+    diff_regions = res,
+    outfile = "significantly_differential_regions",
+    fdr = 0.05,
+    ylim = c(-0.05, 3))
+}

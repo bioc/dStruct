@@ -17,3 +17,13 @@ Nucleotide-wise d score.
 \description{
 Assesses within-group or between-group variation.
 }
+\examples{
+#Example of a data frame with reactivities.
+reacs <- data.frame(matrix(runif(30, 0, 10), 10, 3))
+
+#The columns of data frame with must indicate sample grouping and id.
+colnames(reacs) <- c("A1", "A2", "B1")
+
+#Get nucleotide-wise dissimilarity scores for a set of samples.
+dCombs(rdf = reacs, combs = data.frame(c("A1", "B1")))
+}

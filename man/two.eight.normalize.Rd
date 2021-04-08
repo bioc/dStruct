@@ -15,3 +15,6 @@ A vector of normalized reactivities.
 \description{
 Normalizes raw reactivities using 2-8 \% method.
 }
+\examples{
+two.eight.normalize(c(NA, rnorm(20, 0.5, 0.3), NA, -999))
+}

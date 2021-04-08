@@ -8,7 +8,7 @@ dStruct.guided(
   rdf,
   reps_A,
   reps_B,
-  batches = F,
+  batches = FALSE,
   within_combs = NULL,
   between_combs = NULL,
   check_quality = TRUE,
@@ -40,4 +40,11 @@ p-value for the tested region (estimated using one-sided Wilcoxon signed rank te
 }
 \description{
 Performs guided discovery of differentially reactive regions.
+}
+\examples{
+#Load Wan et al., 2014 data
+data(wan2014)
+
+#Run dStruct in the guided mode on first region in wan2014.
+dStruct.guided(wan2014[[1]], reps_A = 2, reps_B = 1)
 }
