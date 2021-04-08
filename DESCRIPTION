@@ -3,8 +3,6 @@ Type: Package
 Title: Identifying differentially reactive regions from RNA structurome profiling data
 Version: 0.99.0
 Depends: R (>= 4.0)
-Author: Krishna Choudhary <kchoudhary@ucdavis.edu>
-Maintainer: Krishna Choudhary <kchoudhary@ucdavis.edu>
 Authors@R: c(
     person("Krishna", "Choudhary", role=c("aut", "cre"), 
         email="kchoudhary@ucdavis.edu", comment = c(ORCID = "0000-0002-7966-1527")),

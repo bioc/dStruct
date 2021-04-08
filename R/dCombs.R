@@ -11,6 +11,6 @@ dCombs <- function(rdf, combs) {
     d[, i] = calcDis(curr_dat)
   }
 
-  d = apply(d, 1, mean, na.rm=T)
+  d = apply(d, 1, mean, na.rm=TRUE)
   return(d)
 }

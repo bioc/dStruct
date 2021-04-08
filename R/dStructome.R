@@ -21,12 +21,12 @@
 #' @param proximity_defined_length If performing a "proximity-assisted" test, minimum end-to-end length of a region to be tested.
 #' @return Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
 #' @export
-dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
-                       check_signal_strength = T, check_nucs = T, check_quality = T,
+dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
+                       check_signal_strength = TRUE, check_nucs = TRUE, check_quality = TRUE,
                        quality = "auto", evidence = 0, signal_strength = 0.1,
-                       within_combs = NULL, between_combs= NULL, ind_regions = T, gap = 1,
+                       within_combs = NULL, between_combs= NULL, ind_regions = TRUE, gap = 1,
                        processes = "auto", method = "denovo",
-                       proximity_assisted = F, proximity = 10,
+                       proximity_assisted = FALSE, proximity = 10,
                        proximity_defined_length = 30) {
 
   if (is.null(names(rl)) | (length(names(rl)) != length(rl))) stop("List \'rl\' supplied to dStructome without transcript names.")
@@ -50,7 +50,7 @@ dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
                      within_combs, between_combs, check_quality,
                      quality, evidence)
     }, rl, mc.cores=processes)
-    
+
     pvals = result[1, ]
     names(pvals) = NULL
     del_d = result[2, ]
@@ -66,9 +66,9 @@ dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
               check_signal_strength, check_nucs, check_quality,
               quality, evidence, signal_strength,
               within_combs, between_combs, ind_regions, gap,
-              get_FDR = F, proximity_assisted, proximity,
+              get_FDR = FALSE, proximity_assisted, proximity,
               proximity_defined_length)
-    }, rl, mc.cores=processes, SIMPLIFY = F)
+    }, rl, mc.cores=processes, SIMPLIFY = FALSE)
 
     if (ind_regions) {
       res_df = data.frame(t= NA, Start= NA, Stop = NA, pval= NA, del_d = NA)
@@ -85,7 +85,7 @@ dStructome <- function(rl, reps_A, reps_B, batches= F, min_length = 11,
       for (i in 1:length(result)) {
         if (is.null(result[[i]])) next
         pvals_and_del_d = rbind(pvals, data.frame(t =  names(result)[i], pval = result[[i]]$pval,
-                                        del_d = result[[i]]$del_d), stringsAsFactors= F)
+                                        del_d = result[[i]]$del_d), stringsAsFactors= FALSE)
         res_df = rbind(res_df, data.frame(t= names(result)[i], result[[i]]$regions))
       }
 

@@ -11,11 +11,11 @@
 #' @param signal_strength Threshold for minimum signal strength.
 #' @export
 getRegions <- function(d_within, d_spec, rdf, min_length= 11,
-                       check_signal_strength = T, check_nucs = T, check_quality = T,
+                       check_signal_strength = TRUE, check_nucs = TRUE, check_quality = TRUE,
                        quality = 0.5, evidence = 0, signal_strength = 0.1) {
 
   if (check_signal_strength) {
-    insufficient_signal = apply(rdf, 1, function(x) all(abs(x) < signal_strength, na.rm=T))
+    insufficient_signal = apply(rdf, 1, function(x) all(abs(x) < signal_strength, na.rm=TRUE))
     d_within[insufficient_signal] = NA
     d_spec[insufficient_signal] = NA
   }
@@ -29,7 +29,7 @@ getRegions <- function(d_within, d_spec, rdf, min_length= 11,
   min_nucs = min(min_length, 6)-1
 
   smooth_evidence = zoo::rollapply(d_spec - d_within, width = min_length,
-                                   FUN= function(x) mean(x, na.rm=T))
+                                   FUN= function(x) mean(x, na.rm=TRUE))
 
   where_evidence = smooth_evidence > evidence
   smooth_evidence[where_evidence] = 1
@@ -53,7 +53,7 @@ getRegions <- function(d_within, d_spec, rdf, min_length= 11,
     #Trim nucleotides from end with very low reactivities, only if regions detected are not too short.
     if (end - start + 1 >= 11) {
       trim_reac = apply(round(rdf[start:end, ], 2), 1,
-                        function(x) all(abs(x) <= signal_strength, na.rm= T))
+                        function(x) all(abs(x) <= signal_strength, na.rm= TRUE))
       if (all(trim_reac)) next
 
       start = start + which(!trim_reac)[1] - 1
@@ -78,7 +78,7 @@ getRegions <- function(d_within, d_spec, rdf, min_length= 11,
     if (check_n) curr_test = start:end
 
     if (check_q) {
-      check_q = mean(d_within[start:end], na.rm= T) <= quality
+      check_q = mean(d_within[start:end], na.rm= TRUE) <= quality
 
       #check_q can be NA if for example, reactivity were all 0s in a region.
       if (!is.na(check_q)) {
@@ -86,7 +86,7 @@ getRegions <- function(d_within, d_spec, rdf, min_length= 11,
         if (!check_q) {
           wi_d = zoo::rollapply(d_within[start:end], width = min_length,
                                 FUN= function(x) mean(x), align= "left")
-          if (any(wi_d <= quality, na.rm= T))  {
+          if (any(wi_d <= quality, na.rm= TRUE))  {
             which_good = start + which(wi_d <= quality) -1
             curr_test = unique(unlist(purrr::map(which_good, function(x) x:(x+min_length-1))))
             check_q = TRUE

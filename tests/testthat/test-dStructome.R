@@ -5,11 +5,12 @@ test_that("Previous result is reproduced in de novo mode", {
   transcripts_previously_top <- c("YJR045C", "YOR383C", "YHL033C",
                                   "YMR120C", "YJR009C", "YJL189W")
   lai2019 <- lai2019[c(transcripts_previously_top,
-             sample(names(lai2019[!(names(lai2019) %in% transcripts_previously_top)]), 6))]
-  nowResult <- suppressWarnings(dStructome(lai2019, 3, 2, batches= T, min_length = 21,
-                          between_combs = data.frame(c("A3", "B1", "B2")),
-                          within_combs = data.frame(c("A1", "A2", "A3")),
-                          ind_regions = TRUE, processes = 1))
+                       sample(names(lai2019[!(names(lai2019) %in% transcripts_previously_top)]), 6))]
+  nowResult <- suppressWarnings(dStructome(lai2019, 3, 2, batches= TRUE,
+                                           min_length = 21,
+                                           between_combs = data.frame(c("A3", "B1", "B2")),
+                                           within_combs = data.frame(c("A1", "A2", "A3")),
+                                           ind_regions = TRUE, processes = 1))
   nowResult <- nowResult[order(nowResult$FDR), ]
   nowTop <- head(nowResult, n = 6)
   expect_true(all(nowTop$t ==
@@ -28,10 +29,10 @@ test_that("Previous result is reproduced in de novo mode", {
   })
 
   delD_to_compare <- data.frame(nowResult = nowTop$del_d,
-                                 previous = c(0.09315098,
-                                              0.16484672, 0.17185732,
-                                              0.12450723, 0.11853069,
-                                              0.14850375))
+                                previous = c(0.09315098,
+                                             0.16484672, 0.17185732,
+                                             0.12450723, 0.11853069,
+                                             0.14850375))
   apply(delD_to_compare, 1, function(x) {
     names(x) <- NULL
     expect_equal(x[1], x[2],

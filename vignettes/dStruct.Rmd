@@ -12,7 +12,7 @@ output:
     toc_float: true
   BiocStyle::pdf_document: default
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Differential RNA structurome analysis using `dStruct`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: "`r file.path(system.file('extdata', package = 'dStruct'), 'refs.bib')`"
@@ -118,7 +118,7 @@ dStruct(rdf = lai2019[["YAL042W"]],
 
 Alternatively, all transcripts in a reactivity list can be analyzed in one step using the wrapper function `dStructome`. By default, `dStructome` spawns multiple processes, which speeds up the analysis by processing transcripts in parallel. This behavior can be changed using the argument `processes` as shown in the following code chunk.
 ```{r, warning=FALSE}
-res <- dStructome(lai2019, 3, 2, batches= T, min_length = 21,
+res <- dStructome(lai2019, 3, 2, batches= TRUE, min_length = 21,
                   between_combs = data.frame(c("A3", "B1", "B2")),
                   within_combs = data.frame(c("A1", "A2", "A3")),
                   ind_regions = TRUE, processes = 1)
