@@ -2,6 +2,8 @@
 #' @description Assesses normalization factor for raw reactivities using 2-8 \% method.
 #' @param raw.estimates A vector of raw reactivities.
 #' @return The normalization factor.
+#' @examples
+#' normalizer(c(NA, rnorm(20, 0.5, 0.3), NA, -999))
 #' @export
 normalizer <- function(raw.estimates) {
   raw.estimates[which(raw.estimates == -999)] <- NA

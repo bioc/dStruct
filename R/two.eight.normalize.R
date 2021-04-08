@@ -2,6 +2,8 @@
 #' @description Normalizes raw reactivities using 2-8 \% method.
 #' @param raw.estimates A vector of raw reactivities.
 #' @return A vector of normalized reactivities.
+#' @examples
+#' two.eight.normalize(c(NA, rnorm(20, 0.5, 0.3), NA, -999))
 #' @export
 two.eight.normalize <- function(raw.estimates) {
   normalizer <- normalizer(raw.estimates)

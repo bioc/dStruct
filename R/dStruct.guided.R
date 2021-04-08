@@ -9,6 +9,12 @@
 #' @param quality Worst allowed quality for a region to be tested.
 #' @param evidence Minimum evidence of increase in variation from within-group comparisons to between-group comparisons for a region to be tested.
 #' @return p-value for the tested region (estimated using one-sided Wilcoxon signed rank test) and the median of nucleotide-wise difference of between-group and within-group d-scores.
+#' @examples
+#' #Load Wan et al., 2014 data
+#' data(wan2014)
+#'
+#' #Run dStruct in the guided mode on first region in wan2014.
+#' dStruct.guided(wan2014[[1]], reps_A = 2, reps_B = 1)
 #' @export
 dStruct.guided <- function(rdf, reps_A, reps_B, batches = FALSE,
                            within_combs = NULL, between_combs= NULL, check_quality = TRUE,

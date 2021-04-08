@@ -20,6 +20,21 @@
 #' @param proximity Maximum distance between constructed regions for them to be considered proximal.
 #' @param proximity_defined_length If performing a "proximity-assisted" test, minimum end-to-end length of a region to be tested.
 #' @return Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
+#' @examples
+#' #Load data from Lai et al., 2019
+#' data(lai2019)
+#'
+#' #Run dStruct in de novo discovery mode for all the transcripts in this data in one step.
+#' dStructome(lai2019, 3, 2, batches= TRUE, min_length = 21,
+#'     between_combs = data.frame(c("A3", "B1", "B2")),
+#'     within_combs = data.frame(c("A1", "A2", "A3")),
+#'     ind_regions = TRUE, processes = 1)
+#'
+#' #Load data from Wan et al., 2014
+#' data(wan2014)
+#'
+#' #Run dStruct in guide discovery mode for all the transcript regions in this data in one step.
+#' dStructome(wan2014, reps_A = 2, reps_B = 1, method = "guided", processes = 1)
 #' @export
 dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
                        check_signal_strength = TRUE, check_nucs = TRUE, check_quality = TRUE,

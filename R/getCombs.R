@@ -5,6 +5,9 @@
 #' @param between_combs Dataframe with each column containing groupings of replicates of groups A and B, which will be used to assess between-group variation.
 #' @param within_combs Data.frame with each column containing groupings of replicates of groups A or B, which will be used to assess within-group variation.
 #' @return List of two dataframes, containing groupings for within-group and between-group variation.
+#' @examples
+#' #Get heterogeneous and homogeneous set combinations of samples when there are 2 samples of group A and 1 of group B.
+#' getCombs(2, 1)
 #' @export
 getCombs <- function(reps_A, reps_B, batches = FALSE, between_combs= NULL, within_combs= NULL) {
   if ((is.null(within_combs) & !is.null(between_combs)) | (is.null(between_combs) & !is.null(within_combs))) stop("Homogeneous and heterogeneous sets should either both be null or both be specified with equal number of samples in each set.")
