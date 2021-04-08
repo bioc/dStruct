@@ -2,7 +2,7 @@ data("lai2019")
 
 test_that("Previous result is reproduced when testing individual regions.", {
   #Previously obtained results for YAL042W
-  nowResult <- suppressWarnings(dStruct(rdf = rl[["YAL042W"]],
+  nowResult <- suppressWarnings(dStruct(rdf = lai2019[["YAL042W"]],
                        reps_A = 3, reps_B = 2,
                        batches = TRUE, min_length = 21,
                        between_combs = data.frame(c("A3", "B1", "B2")),
@@ -47,7 +47,7 @@ test_that("Previous result is reproduced when testing individual regions.", {
 
 test_that("Previous result is reproduced when testing regions of a transcript collectively.", {
   #Previously obtained results for YAL042W
-  nowResult <- suppressWarnings(dStruct(rdf = rl[["YAL042W"]],
+  nowResult <- suppressWarnings(dStruct(rdf = lai2019[["YAL042W"]],
                                         reps_A = 3, reps_B = 2,
                                         batches = TRUE, min_length = 21,
                                         between_combs = data.frame(c("A3", "B1", "B2")),

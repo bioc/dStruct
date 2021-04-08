@@ -4,9 +4,9 @@ data("wan2014")
 test_that("Previous result is reproduced in de novo mode", {
   transcripts_previously_top <- c("YJR045C", "YOR383C", "YHL033C",
                                   "YMR120C", "YJR009C", "YJL189W")
-  rl <- rl[c(transcripts_previously_top,
-             sample(names(rl[!(names(rl) %in% transcripts_previously_top)]), 6))]
-  nowResult <- suppressWarnings(dStructome(rl, 3, 2, batches= T, min_length = 21,
+  lai2019 <- lai2019[c(transcripts_previously_top,
+             sample(names(lai2019[!(names(lai2019) %in% transcripts_previously_top)]), 6))]
+  nowResult <- suppressWarnings(dStructome(lai2019, 3, 2, batches= T, min_length = 21,
                           between_combs = data.frame(c("A3", "B1", "B2")),
                           within_combs = data.frame(c("A1", "A2", "A3")),
                           ind_regions = TRUE, processes = 1))
@@ -66,7 +66,7 @@ test_that("Previous result is reproduced in guided mode", {
                                         0.041748046875, 0.03076171875,
                                         0.09140625))
 
-  nowResult <- dStructome(rl_predefined_regs,
+  nowResult <- dStructome(wan2014,
                           reps_A = 2, reps_B = 1, method = "guided",
                           processes = 1)
 

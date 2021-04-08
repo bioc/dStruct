@@ -2,7 +2,7 @@ data(wan2014)
 
 test_that("Previous result is reproduced when testing a region.", {
   #Previously obtained result for 1__NM_000146__357__367
-  nowResult <- dStruct.guided(rl_predefined_regs[[1]],
+  nowResult <- dStruct.guided(wan2014[[1]],
                               reps_A = 2, reps_B = 1)
 
   expect_true(all(names(nowResult) == c("pval", "del_d")))
