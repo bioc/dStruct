@@ -1,6 +1,15 @@
-#' Performs de novo discovery of differentially reactive regions.
+#' @title Performs de novo discovery of differentially reactive regions.
 #'
-#' To be filled.
+#' @description This function takes reactivity profiles for samples of two groups
+#' as input and identifies differentially reactive regions in three steps (see
+#' Choudhary et al., \emph{Genome Biology}, 2019 for details). First, it regroups
+#' the samples into homogeneous and heteregenous sub-groups, which are used to
+#' compute the within-group and between-group nucleotide-wise \emph{d} scores.
+#' Second, smoothed between- and within-group \emph{d} score profiles are compared
+#' to construct candidate differential regions. Finally, unsmoothed between- and
+#' within-group \emph{d} scores are compared using the Wilcoxon signed-rank test.
+#' The resulting p-values quantify the significance of difference in reactivity
+#' patterns between the two input groups.
 #'
 #' @param reps_A Number of replicates of group A.
 #' @param reps_B Number of replicates of group B.
@@ -22,6 +31,14 @@
 #' @param proximity Maximum distance between constructed regions for them to be considered proximal.
 #' @param proximity_defined_length If performing a "proximity-assisted" test, minimum end-to-end length of a region to be tested.
 #' @return Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
+#'
+#' @author Krishna Choudhary
+#'
+#' @references
+#' Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+#' dStruct: identifying differentially reactive regions from RNA structurome
+#' profiling data. \emph{Genome biology}, 20(1), 1-26.
+#'
 #' @examples
 #' #Load data from Lai et al., 2019
 #' data(lai2019)

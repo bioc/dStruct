@@ -1,4 +1,9 @@
-#' Performs de novo discovery of differentially reactive regions for transcriptome-wide data.
+#' @title Performs de novo or guided discovery of differentially reactive regions for transcriptome-wide data.
+#'
+#' @description This function provides a convenient way to call the dStruct or
+#' dStructGuided functions for multiple transcripts simultaneously. By default,
+#' the transcripts are processed in using multiple parallel processes if available.
+#'
 #' @param reps_A Number of replicates of group A.
 #' @param reps_B Number of replicates of group B.
 #' @param rl List of dataframes of reactivities for each sample.
@@ -20,6 +25,14 @@
 #' @param proximity Maximum distance between constructed regions for them to be considered proximal.
 #' @param proximity_defined_length If performing a "proximity-assisted" test, minimum end-to-end length of a region to be tested.
 #' @return Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
+#'
+#' @author Krishna Choudhary
+#'
+#' @references
+#' Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+#' dStruct: identifying differentially reactive regions from RNA structurome
+#' profiling data. \emph{Genome biology}, 20(1), 1-26.
+#'
 #' @examples
 #' #Load data from Lai et al., 2019
 #' data(lai2019)

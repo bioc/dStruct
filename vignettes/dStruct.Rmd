@@ -54,7 +54,7 @@ dStruct takes nucleotide-level normalized reactivities of one or multiple RNAs a
 
 # Input data
 
-The input data to dStruct is a `list` object. Each element of the `list` should be a `data.frame` containing normalized reactivities. 
+The input data to dStruct is a `list` object. Each element of the `list` should be a `data.frame` containing normalized reactivities. Currently, the preffered normalization method depends on the RNA structurome profiling technology. We have provided an implementation of the 2-8 % method for normalization (@low2010shape) via a function named `twoEightNormalize`, which is commonly used to normalize data from technologies such as SHAPE-Seq, Structure-Seq, etc.  
 
 ## Load inbuilt sample data
 

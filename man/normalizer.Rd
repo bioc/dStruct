@@ -13,8 +13,26 @@ normalizer(raw.estimates)
 The normalization factor.
 }
 \description{
-Assesses normalization factor for raw reactivities using 2-8 \% method.
+Assesses normalization factor for raw reactivities using the 2-8 \%
+method. Given a reactivity profile, first, remove 2\% of the nucleotides with
+the highest reactivities. Then, the normalization factor is the mean of reactivities
+of the 8\% of the nucleotides with the next highest reactivities.
 }
 \examples{
 normalizer(c(NA, rnorm(20, 0.5, 0.3), NA, -999))
+}
+\references{
+Low JT, Weeks KM. SHAPE-directed RNA secondary structure prediction.
+\emph{Methods}. 2010; 52(2):150–8.
+
+Sloma MF, Mathews DH, Chen SJ, Burke-Aguero DH. Chapter four – improving RNA
+secondary structure prediction with structure mapping data. In:
+\emph{Methods in Enzymology}, vol. 553. Cambridge: Academic Press: 2015. p. 91–114.
+
+Choudhary K, Deng F, Aviran S. Comparative and integrative analysis of RNA
+structural profiling data: current practices and emerging questions. \emph{Quant Biol.}
+2017; 5(1):3–24.
+}
+\author{
+Krishna Choudhary
 }

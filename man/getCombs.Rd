@@ -27,9 +27,20 @@ getCombs(
 List of two dataframes, containing groupings for within-group and between-group variation.
 }
 \description{
-Identifies subgroupings of replicates for assessing within-group and between-group variation.
+Regroup all the samples of A and B groups into homogoneous and
+heterogeneous sub-groups. Each homogenous sub-group contains replicates of either
+group A only or group B only. Each heterogeneous sub-group has a mix of samples from
+both the groups A and B.
 }
 \examples{
 #Get heterogeneous and homogeneous set combinations of samples when there are 2 samples of group A and 1 of group B.
 getCombs(2, 1)
+}
+\references{
+Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+dStruct: identifying differentially reactive regions from RNA
+structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+}
+\author{
+Krishna Choudhary
 }

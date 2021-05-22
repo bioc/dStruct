@@ -42,5 +42,15 @@ getRegions(
 Integer vector of nucleotides that constitute potential differentially reactive regions.
 }
 \description{
-Constructs potential differentially reactive regions.
+This function takes between- and within-group \emph{d} scores for a
+transcript as input and identifies regions where the former is generally larger.
+Regions that pass minimum quality and minimum signal criteria are returned.
+}
+\references{
+Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+dStruct: identifying differentially reactive regions from RNA
+structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+}
+\author{
+Krishna Choudhary
 }

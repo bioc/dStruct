@@ -14,8 +14,8 @@ Counts data from \href{https://doi.org/10.1038/nature12946}{Wan et al., 2014} in
 data(wan2014)
 }
 \description{
-Data from a PARS assay of a family trio of mother, father, and child. The data was
-pre-processed to obtain PARS scores as described in Choudhary et al. (2019).
+Data from a PARS assay of a family trio of mother, father, and child. The
+data was pre-processed to obtain PARS scores as described in Choudhary et al. (2019).
 }
 \examples{
 data(wan2014)

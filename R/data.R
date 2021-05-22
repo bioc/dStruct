@@ -1,6 +1,6 @@
-#' \emph{Saccharomyces cerevisiae} Structure-seq data
+#' @title \emph{Saccharomyces cerevisiae} Structure-seq data
 #'
-#' Data from a Structure-seq assay of five samples of \emph{S. cerevisiae}, three
+#' @description Data from a Structure-seq assay of five samples of \emph{S. cerevisiae}, three
 #' of which were wild-type samples and two mutant samples. The data was
 #' pre-processed to obtain DMS reactivities as described by Lai et al. (2019).
 #'
@@ -21,10 +21,10 @@
 #' data("lai2019")
 "lai2019"
 
-#' \emph{Homo sapiens} PARS data
+#' @title \emph{Homo sapiens} PARS data
 #'
-#' Data from a PARS assay of a family trio of mother, father, and child. The data was
-#' pre-processed to obtain PARS scores as described in Choudhary et al. (2019).
+#' @description Data from a PARS assay of a family trio of mother, father, and child. The
+#' data was pre-processed to obtain PARS scores as described in Choudhary et al. (2019).
 #'
 #' @docType data
 #'

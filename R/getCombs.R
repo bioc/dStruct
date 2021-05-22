@@ -1,10 +1,24 @@
-#' Identifies subgroupings of replicates for assessing within-group and between-group variation.
+#' @title Identifies subgroupings of replicates for assessing within-group and between-group variation.
+#'
+#' @description Regroup all the samples of A and B groups into homogoneous and
+#' heterogeneous sub-groups. Each homogenous sub-group contains replicates of either
+#' group A only or group B only. Each heterogeneous sub-group has a mix of samples from
+#' both the groups A and B.
+#'
 #' @param reps_A Number of replicates of group A.
 #' @param reps_B Number of replicates of group B.
 #' @param batches Logical suggesting if replicates of group A and B were performed in batches and are labelled accordingly. If TRUE, a heterogeneous/homogeneous subset may not have multiple samples from the same batch.
 #' @param between_combs Dataframe with each column containing groupings of replicates of groups A and B, which will be used to assess between-group variation.
 #' @param within_combs Data.frame with each column containing groupings of replicates of groups A or B, which will be used to assess within-group variation.
 #' @return List of two dataframes, containing groupings for within-group and between-group variation.
+#'
+#' @author Krishna Choudhary
+#'
+#' @references
+#' Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+#' dStruct: identifying differentially reactive regions from RNA
+#' structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+#'
 #' @examples
 #' #Get heterogeneous and homogeneous set combinations of samples when there are 2 samples of group A and 1 of group B.
 #' getCombs(2, 1)

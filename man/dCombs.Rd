@@ -12,10 +12,13 @@ dCombs(rdf, combs)
 \item{combs}{Data.frame with each column containing groupings of samples.}
 }
 \value{
-Nucleotide-wise d score.
+Nucleotide-wise d scores.
 }
 \description{
-Assesses within-group or between-group variation.
+Given the reactivity profiles for a transcript from multiple samples,
+and a list of sample identifiers, this function computes the dissimilarity of
+reactivity scores between the specified samples. These are returned as a sequence of
+nucleotide-wise \emph{d} scores.
 }
 \examples{
 #Example of a data frame with reactivities.
@@ -26,4 +29,12 @@ colnames(reacs) <- c("A1", "A2", "B1")
 
 #Get nucleotide-wise dissimilarity scores for a set of samples.
 dCombs(rdf = reacs, combs = data.frame(c("A1", "B1")))
+}
+\references{
+Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+dStruct: identifying differentially reactive regions from RNA structurome
+profiling data. \emph{Genome biology}, 20(1), 1-26.
+}
+\author{
+Krishna Choudhary
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dStructome.R
 \name{dStructome}
 \alias{dStructome}
-\title{Performs de novo discovery of differentially reactive regions for transcriptome-wide data.}
+\title{Performs de novo or guided discovery of differentially reactive regions for transcriptome-wide data.}
 \usage{
 dStructome(
   rl,
@@ -72,7 +72,9 @@ dStructome(
 Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
 }
 \description{
-Performs de novo discovery of differentially reactive regions for transcriptome-wide data.
+This function provides a convenient way to call the dStruct or
+dStructGuided functions for multiple transcripts simultaneously. By default,
+the transcripts are processed in using multiple parallel processes if available.
 }
 \examples{
 #Load data from Lai et al., 2019
@@ -89,4 +91,12 @@ data(wan2014)
 
 #Run dStruct in guide discovery mode for all the transcript regions in this data in one step.
 dStructome(wan2014, reps_A = 2, reps_B = 1, method = "guided", processes = 1)
+}
+\references{
+Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+dStruct: identifying differentially reactive regions from RNA structurome
+profiling data. \emph{Genome biology}, 20(1), 1-26.
+}
+\author{
+Krishna Choudhary
 }

@@ -30,7 +30,9 @@ plotDStructurome(
 Saves a PDF for all differentially reactive regions. Returns NULL.
 }
 \description{
-Plots differentially reactive regions.
+Given the table of results from dStruct or dStructGuided and the
+corresponding lists with reactivity scores for all transcripts, this function saves
+a PDF file with detailed visualizations of reactivities for all differential regions.
 }
 \examples{
 #Load data from Lai et al., 2019
@@ -48,4 +50,12 @@ plotDStructurome(rl = lai2019,
     outfile = "significantly_differential_regions",
     fdr = 0.05,
     ylim = c(-0.05, 3))
+}
+\references{
+Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+dStruct: identifying differentially reactive regions from RNA
+structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+}
+\author{
+Krishna Choudhary
 }

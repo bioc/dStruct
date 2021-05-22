@@ -1,4 +1,9 @@
-#' Plots differentially reactive regions.
+#' @title Plots differentially reactive regions.
+#'
+#' @description Given the table of results from dStruct or dStructGuided and the
+#' corresponding lists with reactivity scores for all transcripts, this function saves
+#' a PDF file with detailed visualizations of reactivities for all differential regions.
+#'
 #' @param rl List of dataframes of reactivities for each sample.
 #' @param diff_regions Dataframe of regions with significance of differentially reactivity.
 #' @param outfile The name for pdf file which will be saved.
@@ -6,6 +11,14 @@
 #' @param ylim Y-axis limits for plots.
 #' @param del_d_cutoff Minimum effect size for plotted regions specified in terms of median difference of the between-group and within-group d-scores.
 #' @return Saves a PDF for all differentially reactive regions. Returns NULL.
+#'
+#' @author Krishna Choudhary
+#'
+#' @references
+#' Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+#' dStruct: identifying differentially reactive regions from RNA
+#' structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+#'
 #' @examples
 #' #Load data from Lai et al., 2019
 #' data(lai2019)

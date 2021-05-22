@@ -1,4 +1,9 @@
-#' Constructs potential differentially reactive regions.
+#' @title Constructs potential differentially reactive regions.
+#'
+#' @description This function takes between- and within-group \emph{d} scores for a
+#' transcript as input and identifies regions where the former is generally larger.
+#' Regions that pass minimum quality and minimum signal criteria are returned.
+#'
 #' @param d_within Nucleotide-wise d score for within-group variation.
 #' @param d_spec Nucleotide-wise d score for between-group variation.
 #' @param rdf Dataframe of reactivities for each sample.
@@ -10,6 +15,14 @@
 #' @param evidence Minimum evidence of increase in variation from within-group comparisons to between-group comparisons for a region to be tested.
 #' @param signal_strength Threshold for minimum signal strength.
 #' @return Integer vector of nucleotides that constitute potential differentially reactive regions.
+#'
+#' @author Krishna Choudhary
+#'
+#' @references
+#' Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+#' dStruct: identifying differentially reactive regions from RNA
+#' structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+#'
 #' @export
 getRegions <- function(d_within, d_spec, rdf, min_length= 11,
                        check_signal_strength = TRUE, check_nucs = TRUE, check_quality = TRUE,

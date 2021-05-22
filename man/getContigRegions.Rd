@@ -15,7 +15,7 @@ getContigRegions(x, gap = 0)
 Dataframe storing start and stop sites of continguous regions.
 }
 \description{
-Identifies contiguous regions from a list of nucleotide indices.
+Given a sequence of nucleotide indices, this function returns integer ranges covered by the indices. There is an option to merge ranges if they are separated by less than a user-specified distance.
 }
 \examples{
 #Convert an integer vector of nucleotide positions to a data frame containing the coordinates of contiguous regions.
@@ -24,4 +24,12 @@ getContigRegions(nucleotide_positions)
 
 #Merge regions if their end points are within 3 nt of each other.
 getContigRegions(nucleotide_positions, gap = 3)
+}
+\references{
+Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+dStruct: identifying differentially reactive regions from RNA
+structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+}
+\author{
+Krishna Choudhary
 }

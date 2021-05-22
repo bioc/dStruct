@@ -39,7 +39,14 @@ dStructGuided(
 p-value for the tested region (estimated using one-sided Wilcoxon signed rank test) and the median of nucleotide-wise difference of between-group and within-group d-scores.
 }
 \description{
-Performs guided discovery of differentially reactive regions.
+This function takes as input reactivity profiles for a
+transcript region from samples of two groups. First, it regroups the samples
+into homogeneous and heteregenous sub-groups, which are used to compute the
+within-group and between-group nucleotide-wise \emph{d} scores. If the
+region meets the quality criteria, the between- and within-group \emph{d}
+scores are compared using the Wilcoxon signed-rank test.
+The resulting p-values quantify the significance of difference in reactivity
+patterns between the two input groups.
 }
 \examples{
 #Load Wan et al., 2014 data
@@ -47,4 +54,12 @@ data(wan2014)
 
 #Run dStruct in the guided mode on first region in wan2014.
 dStructGuided(wan2014[[1]], reps_A = 2, reps_B = 1)
+}
+\references{
+Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+dStruct: identifying differentially reactive regions from RNA
+structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+}
+\author{
+Krishna Choudhary
 }

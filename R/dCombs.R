@@ -1,7 +1,21 @@
-#' Assesses within-group or between-group variation.
+#' @title Assesses within-group or between-group variation.
+#'
+#' @description Given the reactivity profiles for a transcript from multiple samples,
+#' and a list of sample identifiers, this function computes the dissimilarity of
+#' reactivity scores between the specified samples. These are returned as a sequence of
+#' nucleotide-wise \emph{d} scores.
+#'
 #' @param rdf Data.frame of reactivities for each sample.
 #' @param combs Data.frame with each column containing groupings of samples.
-#' @return Nucleotide-wise d score.
+#' @return Nucleotide-wise d scores.
+#'
+#' @author Krishna Choudhary
+#'
+#' @references
+#' Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+#' dStruct: identifying differentially reactive regions from RNA structurome
+#' profiling data. \emph{Genome biology}, 20(1), 1-26.
+#'
 #' @examples
 #' #Example of a data frame with reactivities.
 #' reacs <- data.frame(matrix(runif(30, 0, 10), 10, 3))

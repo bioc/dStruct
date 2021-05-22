@@ -1,4 +1,14 @@
-#' Performs guided discovery of differentially reactive regions.
+#' @title Performs guided discovery of differentially reactive regions.
+#'
+#' @description This function takes as input reactivity profiles for a
+#' transcript region from samples of two groups. First, it regroups the samples
+#' into homogeneous and heteregenous sub-groups, which are used to compute the
+#' within-group and between-group nucleotide-wise \emph{d} scores. If the
+#' region meets the quality criteria, the between- and within-group \emph{d}
+#' scores are compared using the Wilcoxon signed-rank test.
+#' The resulting p-values quantify the significance of difference in reactivity
+#' patterns between the two input groups.
+#'
 #' @param reps_A Number of replicates of group A.
 #' @param reps_B Number of replicates of group B.
 #' @param rdf Dataframe of reactivities for each sample. Each column must be labelled as A1, A2, ..., B1, B2, ...
@@ -9,6 +19,14 @@
 #' @param quality Worst allowed quality for a region to be tested.
 #' @param evidence Minimum evidence of increase in variation from within-group comparisons to between-group comparisons for a region to be tested.
 #' @return p-value for the tested region (estimated using one-sided Wilcoxon signed rank test) and the median of nucleotide-wise difference of between-group and within-group d-scores.
+#'
+#' @author Krishna Choudhary
+#'
+#' @references
+#' Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
+#' dStruct: identifying differentially reactive regions from RNA
+#' structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
+#'
 #' @examples
 #' #Load Wan et al., 2014 data
 #' data(wan2014)
