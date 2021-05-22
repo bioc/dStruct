@@ -69,7 +69,7 @@ dStruct(
 Constructs regions, reports p-value and median difference of between-group and within-group d-scores for each region, and FDR for them.
 }
 \description{
-Performs de novo discovery of differentially reactive regions.
+To be filled.
 }
 \examples{
 #Load data from Lai et al., 2019

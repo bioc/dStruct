@@ -47,32 +47,32 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
   if (is.null(names(rl)) | (length(names(rl)) != length(rl))) stop("List \'rl\' supplied to dStructome without transcript names.")
 
   if (processes == "auto") {
-    processes = parallel::detectCores()-1
+    processes <- parallel::detectCores()-1
   } else {
-    processes = as.numeric(processes)
+    processes <- as.numeric(processes)
     if ((processes %% 1 != 0) | (processes < 0)) stop("parameter \'processes\' supplied to dStructome must be positive integer.")
   }
 
-  if (is.null(between_combs) | is.null(within_combs)) idcombs = getCombs(reps_A, reps_B, batches,
+  if (is.null(between_combs) | is.null(within_combs)) idcombs <- getCombs(reps_A, reps_B, batches,
                                                                          between_combs, within_combs)
-  if (is.null(between_combs)) between_combs = idcombs$between_combs
-  if (is.null(within_combs)) within_combs = idcombs$within_combs
+  if (is.null(between_combs)) between_combs <- idcombs$between_combs
+  if (is.null(within_combs)) within_combs <- idcombs$within_combs
 
   if (method == "guided") {
 
     result <- parallel::mcmapply(function(x) {
-      dStruct.guided(x, reps_A, reps_B, batches,
+      dStructGuided(x, reps_A, reps_B, batches,
                      within_combs, between_combs, check_quality,
                      quality, evidence)
     }, rl, mc.cores=processes)
 
-    pvals = result[1, ]
-    names(pvals) = NULL
-    del_d = result[2, ]
-    names(del_d) = NULL
-    res_df = data.frame(t = names(rl), pval = pvals, del_d = del_d)
-    res_df = subset(res_df, !is.na(pval))
-    res_df$FDR = p.adjust(res_df$pval, "BH")
+    pvals <- result[1, ]
+    names(pvals) <- NULL
+    del_d <- result[2, ]
+    names(del_d) <- NULL
+    res_df <- data.frame(t = names(rl), pval = pvals, del_d = del_d)
+    res_df <- subset(res_df, !is.na(pval))
+    res_df$FDR <- p.adjust(res_df$pval, "BH")
 
   } else if (method == "denovo") {
 
@@ -86,36 +86,36 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
     }, rl, mc.cores=processes, SIMPLIFY = FALSE)
 
     if (ind_regions) {
-      res_df = data.frame(t= NA, Start= NA, Stop = NA, pval= NA, del_d = NA)
+      res_df <- data.frame(t= NA, Start= NA, Stop = NA, pval= NA, del_d = NA)
       for (i in 1:length(result)) {
         if (is.null(result[[i]])) next
-        res_df = rbind(res_df, data.frame(t= names(result)[i], result[[i]]))
+        res_df <- rbind(res_df, data.frame(t= names(result)[i], result[[i]]))
       }
 
-      res_df = res_df[-1, ]
-      res_df$FDR = p.adjust(res_df$pval, "BH")
+      res_df <- res_df[-1, ]
+      res_df$FDR <- p.adjust(res_df$pval, "BH")
     } else {
-      res_df = data.frame(t= NA, Start= NA, Stop = NA)
-      pvals_and_del_d = data.frame(t= NA, pval= NA, del_d = NA)
+      res_df <- data.frame(t= NA, Start= NA, Stop = NA)
+      pvals_and_del_d <- data.frame(t= NA, pval= NA, del_d = NA)
       for (i in 1:length(result)) {
         if (is.null(result[[i]])) next
-        pvals_and_del_d = rbind(pvals, data.frame(t =  names(result)[i], pval = result[[i]]$pval,
+        pvals_and_del_d <- rbind(pvals, data.frame(t =  names(result)[i], pval = result[[i]]$pval,
                                         del_d = result[[i]]$del_d), stringsAsFactors= FALSE)
-        res_df = rbind(res_df, data.frame(t= names(result)[i], result[[i]]$regions))
+        res_df <- rbind(res_df, data.frame(t= names(result)[i], result[[i]]$regions))
       }
 
-      pvals_and_del_d = pvals_and_del_d[-1, ]
-      res_df = res_df[-1, ]
+      pvals_and_del_d <- pvals_and_del_d[-1, ]
+      res_df <- res_df[-1, ]
 
-      pvals_and_del_d$FDR = p.adjust(pvals_and_del_d$pval, "BH")
+      pvals_and_del_d$FDR <- p.adjust(pvals_and_del_d$pval, "BH")
 
-      res_df$pval = apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$pval)
-      res_df$del_d = apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$del_d)
-      res_df$FDR = apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$FDR)
+      res_df$pval <- apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$pval)
+      res_df$del_d <- apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$del_d)
+      res_df$FDR <- apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$FDR)
     }
   }
 
-  rownames(res_df) = NULL
+  rownames(res_df) <- NULL
   return(res_df)
 
 }

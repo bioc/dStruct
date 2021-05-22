@@ -15,7 +15,7 @@ vignette: >
   %\VignetteIndexEntry{Differential RNA structurome analysis using `dStruct`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-bibliography: "`r file.path(system.file('extdata', package = 'dStruct'), 'refs.bib')`"
+bibliography: "`r 'refs.bib'`"
 abstract: > 
   <p> A large variety of RNA molecules exist in cells. They adopt diverse structures to serve important cellular functions. In the last decade, a number of deep sequencing-based technologies have been developed to study RNA structures at a genome-wide scale, at high resolution, and in vivo or in vitro. These technologies generate large-scale and highly noisy data. A common goal in many studies utilizing such data is to compare RNA structuromes under two or more conditions, and identify RNAs or their regions that may have altered structures between the conditions. 
   <p>`dStruct`: dStruct is a package meant for **d**ifferential analysis of RNA **Struct**urome profiling data [@choudhary2019dstruct]. It is broadly applicable to all existing technologies for RNA structurome profiling. It accounts for inherent biological variation in structuromes between replicate samples and returns differential regions. Here, we describe the input data format required by dStruct, provide use cases, and discuss options for analysis and visualization.
@@ -130,7 +130,7 @@ head(res)
 
 ## Guided discovery
 
-The function `dStruct.guided` tests for differential reactivity profiles of pre-defined regions. Additionally, the wrapper function `dStructome` can analyze profiles for multiple regions simultaneously when its argument `method = "guided"`. 
+The function `dStructGuided` tests for differential reactivity profiles of pre-defined regions. Additionally, the wrapper function `dStructome` can analyze profiles for multiple regions simultaneously when its argument `method = "guided"`. 
 
 We illustrate this mode of running `dStruct` using PARS data from @wan2014landscape. We downloaded the data reported in their manuscript and processed it to get PARS scores as described in @choudhary2019dstruct. The PARS scores are available with the `dStruct` package and can be loaded as follows.
 ```{r}
@@ -150,12 +150,12 @@ The names of the list elements give a transcript's ID and the coordinates of its
 ```{r}
 names(wan2014) %>% head()
 ```
-To test a single region, use `dStruct.guided` as follows.
+To test a single region, use `dStructGuided` as follows.
 ```{r}
-dStruct.guided(wan2014[[1]], 
+dStructGuided(wan2014[[1]], 
                reps_A = 2, reps_B = 1)
 ```
-`dStruct.guided` returns a *p*-value for significance of differential PARS scores in the input region and the median of nucleotide-wise differences of the between-group and within-group *d* scores. Alternatively, all regions in `wan2014` can be analyzed in one step using the wrapper function `dStructome`.
+`dStructGuided` returns a *p*-value for significance of differential PARS scores in the input region and the median of nucleotide-wise differences of the between-group and within-group *d* scores. Alternatively, all regions in `wan2014` can be analyzed in one step using the wrapper function `dStructome`.
 ```{r, warning=FALSE}
 res_predefined_regs <- dStructome(wan2014, 
                                   reps_A = 2, reps_B = 1, method = "guided", 
@@ -168,7 +168,7 @@ head(res_predefined_regs)
 
 # Visualizing results
 
-The function `plot_dStructome` takes in a list of `data.frame`s with reactivities and the result table from `dStructome` to save a PDF file showing the reactivities in a region. We illustrate this with the result for the `lai2019` data. Let us plot the reactivities for the gene with the lowest FDR value. We can identify it as follows.
+The function `plotDStructurome` takes in a list of `data.frame`s with reactivities and the result table from `dStructome` to save a PDF file showing the reactivities in a region. We illustrate this with the result for the `lai2019` data. Let us plot the reactivities for the gene with the lowest FDR value. We can identify it as follows.
 ```{r}
 toPlot <- res %$% 
   magrittr::extract(t, order(FDR)) %>% 
@@ -176,9 +176,9 @@ toPlot <- res %$%
 
 toPlot
 ```
-Users may pass the entire reactivity list to `plot_dStructome` and the complete result table. By default, the results are plotted for FDR < 0.05 and $y$-axis limits range from 0 to 3. However, this may take some time in case there are a large number of differential regions. Here, we plot the reactivities for the gene in the object `toPlot`.
+Users may pass the entire reactivity list to `plotDStructurome` and the complete result table. By default, the results are plotted for FDR < 0.05 and $y$-axis limits range from 0 to 3. However, this may take some time in case there are a large number of differential regions. Here, we plot the reactivities for the gene in the object `toPlot`.
 ```{r, message=FALSE, warning=FALSE}
-plot_dStructurome(rl = lai2019[toPlot], 
+plotDStructurome(rl = lai2019[toPlot], 
                   diff_regions = subset(res, t == toPlot),
                   outfile = paste0("DRRs_in_", toPlot), 
                   fdr = 0.05, 

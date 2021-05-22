@@ -3,9 +3,9 @@
 #' @param raw.estimates A vector of raw reactivities.
 #' @return A vector of normalized reactivities.
 #' @examples
-#' two.eight.normalize(c(NA, rnorm(20, 0.5, 0.3), NA, -999))
+#' twoEightNormalize(c(NA, rnorm(20, 0.5, 0.3), NA, -999))
 #' @export
-two.eight.normalize <- function(raw.estimates) {
+twoEightNormalize <- function(raw.estimates) {
   normalizer <- normalizer(raw.estimates)
   raw.estimates[which(raw.estimates != -999)] <- raw.estimates[which(raw.estimates != -999)] / normalizer
   return(raw.estimates)

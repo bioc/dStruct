@@ -17,22 +17,22 @@
 #'     ind_regions = TRUE, processes = 1)
 #'
 #' #Plot the significant results and save to a PDF file.
-#' plot_dStructurome(rl = lai2019,
+#' plotDStructurome(rl = lai2019,
 #'     diff_regions = res,
 #'     outfile = "significantly_differential_regions",
 #'     fdr = 0.05,
 #'     ylim = c(-0.05, 3))
 #' @export
-plot_dStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.05, 3),
+plotDStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.05, 3),
                               del_d_cutoff = 0.01) {
-  diff_regions = subset(diff_regions, FDR < fdr, del_d > del_d_cutoff)
-  diff_t = unique(diff_regions$t)
+  diff_regions <- subset(diff_regions, FDR < fdr, del_d > del_d_cutoff)
+  diff_t <- unique(diff_regions$t)
 
   pdf(paste0(outfile, ".pdf"), width=7,height=6)
   for (i in 1:length(diff_t)) {
-    curr_t = as.character(diff_t[i])
-    curr_regs = subset(diff_regions, t == curr_t)
-    curr_df = rl[[curr_t]]
+    curr_t <- as.character(diff_t[i])
+    curr_regs <- subset(diff_regions, t == curr_t)
+    curr_df <- rl[[curr_t]]
 
     print(ggplot2::ggplot(data=data.frame(x=0,y=0), ggplot2::aes(x=x, y=y)) +
             ggplot2::annotate("text", x = 4, y = 25,
@@ -52,8 +52,8 @@ plot_dStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0
                            plot.background=ggplot2::element_blank())
     )
 
-    dat = data.frame(curr_df, n = 1:nrow(curr_df))
-    dat = reshape2::melt(dat, id.vars = "n")
+    dat <- data.frame(curr_df, n = 1:nrow(curr_df))
+    dat <- reshape2::melt(dat, id.vars = "n")
 
     print(ggplot2::ggplot(dat, ggplot2::aes(x= n, y= value)) +
             ggplot2::geom_bar(stat="identity") +ggplot2::facet_grid(variable~.)+
@@ -68,9 +68,9 @@ plot_dStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0
 
 
     for (r in 1:nrow(curr_regs)) {
-      dat = data.frame(curr_df[curr_regs$Start[r]:curr_regs$Stop[r], ],
+      dat <- data.frame(curr_df[curr_regs$Start[r]:curr_regs$Stop[r], ],
                        n = curr_regs$Start[r]:curr_regs$Stop[r])
-      dat = reshape2::melt(dat, id.vars = "n")
+      dat <- reshape2::melt(dat, id.vars = "n")
 
       print(ggplot2::ggplot(dat, ggplot2::aes(x= n, y= value)) +
               ggplot2::geom_bar(stat="identity") +ggplot2::facet_grid(variable~.)+

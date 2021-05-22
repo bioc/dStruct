@@ -14,20 +14,20 @@
 #' data(wan2014)
 #'
 #' #Run dStruct in the guided mode on first region in wan2014.
-#' dStruct.guided(wan2014[[1]], reps_A = 2, reps_B = 1)
+#' dStructGuided(wan2014[[1]], reps_A = 2, reps_B = 1)
 #' @export
-dStruct.guided <- function(rdf, reps_A, reps_B, batches = FALSE,
+dStructGuided <- function(rdf, reps_A, reps_B, batches = FALSE,
                            within_combs = NULL, between_combs= NULL, check_quality = TRUE,
                            quality = "auto", evidence = 0) {
 
-  if ((quality == "auto") & min(c(reps_A, reps_B)) != 1) quality = 0.5 else if (quality== "auto") quality = 0.2
-  if (is.null(between_combs) | is.null(within_combs)) idcombs = getCombs(reps_A, reps_B, batches,
+  if ((quality == "auto") & min(c(reps_A, reps_B)) != 1) quality <- 0.5 else if (quality== "auto") quality <- 0.2
+  if (is.null(between_combs) | is.null(within_combs)) idcombs <- getCombs(reps_A, reps_B, batches,
                                                                          between_combs, within_combs)
-  if (is.null(between_combs)) between_combs = idcombs$between_combs
-  if (is.null(within_combs)) within_combs = idcombs$within_combs
+  if (is.null(between_combs)) between_combs <- idcombs$between_combs
+  if (is.null(within_combs)) within_combs <- idcombs$within_combs
 
-  d_within = dCombs(rdf, within_combs)
-  d_between = dCombs(rdf, between_combs)
+  d_within <- dCombs(rdf, within_combs)
+  d_between <- dCombs(rdf, between_combs)
 
   if (mean(d_within, na.rm = TRUE) > quality) return(c(NA, NA))
   if (median(d_between - d_within, na.rm = TRUE) < evidence) return(c(NA, NA))
@@ -39,7 +39,7 @@ dStruct.guided <- function(rdf, reps_A, reps_B, batches = FALSE,
     )
   }, error= function(e) {
     #Place holder for those transcripts that can't be tested due to error.
-    result = c(pval = NA, del_d= NA)
+    result <- c(pval = NA, del_d= NA)
   })
 
   return(result)

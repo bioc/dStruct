@@ -13,13 +13,13 @@
 #' dCombs(rdf = reacs, combs = data.frame(c("A1", "B1")))
 #' @export
 dCombs <- function(rdf, combs) {
-  d = matrix(, nrow(rdf), ncol(combs))
+  d <- matrix(, nrow(rdf), ncol(combs))
   for (i in 1:ncol(combs)) {
-    curr_comb = as.character(combs[, i])
-    curr_dat = rdf[, curr_comb]
-    d[, i] = calcDis(curr_dat)
+    curr_comb <- as.character(combs[, i])
+    curr_dat <- rdf[, curr_comb]
+    d[, i] <- calcDis(curr_dat)
   }
 
-  d = apply(d, 1, mean, na.rm=TRUE)
+  d <- apply(d, 1, mean, na.rm=TRUE)
   return(d)
 }

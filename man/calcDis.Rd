@@ -13,7 +13,7 @@ calcDis(x)
 If input is a numeric vector, a number is returned. For a matrix, a numeric vector is returned.
 }
 \description{
-Calculates d score.
+\emph{d} score of a nucleotide is a measure of dissimilarity of its normalized reactivity scores.
 }
 \examples{
 #Lower standard deviation of reactivites results in lower d-score.
