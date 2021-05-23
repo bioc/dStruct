@@ -38,6 +38,7 @@
 #' @export
 plotDStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.05, 3),
                               del_d_cutoff = 0.01) {
+  diff_regions <- data.frame(diff_regions)
   diff_regions <- subset(diff_regions, FDR < fdr, del_d > del_d_cutoff)
   diff_t <- unique(diff_regions$t)
 
@@ -71,7 +72,7 @@ plotDStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.
     print(ggplot2::ggplot(dat, ggplot2::aes(x= n, y= value)) +
             ggplot2::geom_bar(stat="identity") +ggplot2::facet_grid(variable~.)+
             ggplot2::coord_cartesian(ylim=ylim) +
-            ggplot2::geom_rect(ggplot2::aes(NULL, NULL, xmin=Start-0.5, xmax=Stop+0.5),
+            ggplot2::geom_rect(ggplot2::aes(NULL, NULL, xmin=start-0.5, xmax=end+0.5),
                                ymin= -Inf, ymax= Inf, data= curr_regs, fill= "red",
                                color= NA, alpha= 0.3) +
             ggplot2::theme(strip.text = ggplot2::element_text(size = 6),
@@ -81,8 +82,8 @@ plotDStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.
 
 
     for (r in 1:nrow(curr_regs)) {
-      dat <- data.frame(curr_df[curr_regs$Start[r]:curr_regs$Stop[r], ],
-                       n = curr_regs$Start[r]:curr_regs$Stop[r])
+      dat <- data.frame(curr_df[curr_regs$start[r]:curr_regs$end[r], ],
+                       n = curr_regs$start[r]:curr_regs$end[r])
       dat <- reshape2::melt(dat, id.vars = "n")
 
       print(ggplot2::ggplot(dat, ggplot2::aes(x= n, y= value)) +

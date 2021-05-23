@@ -4,21 +4,19 @@ data("wan2014")
 test_that("Previous result is reproduced in de novo mode", {
   transcripts_previously_top <- c("YJR045C", "YOR383C", "YHL033C",
                                   "YMR120C", "YJR009C", "YJL189W")
-  lai2019 <- lai2019[c(transcripts_previously_top,
-                       sample(names(lai2019[!(names(lai2019) %in% transcripts_previously_top)]), 6))]
   nowResult <- suppressWarnings(dStructome(lai2019, 3, 2, batches= TRUE,
                                            min_length = 21,
                                            between_combs = data.frame(c("A3", "B1", "B2")),
                                            within_combs = data.frame(c("A1", "A2", "A3")),
                                            ind_regions = TRUE, processes = 1))
-  nowResult <- nowResult[order(nowResult$FDR), ]
+  nowResult <- nowResult[order(nowResult@elementMetadata$FDR), ]
   nowTop <- head(nowResult, n = 6)
-  expect_true(all(nowTop$t ==
+  expect_true(all(nowTop@elementMetadata$t ==
                     transcripts_previously_top))
-  expect_true(all(nowTop$Start == c(15, 76, 19, 1557, 1073, 115)))
-  expect_true(all(nowTop$Stop == c(203, 250, 107, 1741, 1237, 203)))
+  expect_true(all(IRanges::start(nowTop) == c(15, 76, 19, 1557, 1073, 115)))
+  expect_true(all(IRanges::end(nowTop) == c(203, 250, 107, 1741, 1237, 203)))
 
-  pvals_to_compare <- data.frame(nowResult = nowTop$pval,
+  pvals_to_compare <- data.frame(nowResult = nowTop@elementMetadata$pval,
                                  previous = c(2.286121e-10, 1.762228e-09,
                                               1.925648e-08, 1.662185e-08,
                                               1.062762e-07, 1.723124e-07))
@@ -28,7 +26,7 @@ test_that("Previous result is reproduced in de novo mode", {
                  tolerance = 10^-1)
   })
 
-  delD_to_compare <- data.frame(nowResult = nowTop$del_d,
+  delD_to_compare <- data.frame(nowResult = nowTop@elementMetadata$del_d,
                                 previous = c(0.09315098,
                                              0.16484672, 0.17185732,
                                              0.12450723, 0.11853069,
@@ -67,9 +65,9 @@ test_that("Previous result is reproduced in guided mode", {
                                         0.041748046875, 0.03076171875,
                                         0.09140625))
 
-  nowResult <- dStructome(wan2014,
+  nowResult <- suppressWarnings(dStructome(wan2014,
                           reps_A = 2, reps_B = 1, method = "guided",
-                          processes = 1)
+                          processes = 1))
 
   apply(cbind(previous_result$t, nowResult$t),
         1,

@@ -9,7 +9,7 @@ getContigRegions(x, gap = 0)
 \arguments{
 \item{x}{A vector of integers.}
 
-\item{gap}{Allowed gap to merge regions.}
+\item{gap}{Include gaps in the ranges if they are shorter than or equal to this length.}
 }
 \value{
 Dataframe storing start and stop sites of continguous regions.
@@ -24,11 +24,6 @@ getContigRegions(nucleotide_positions)
 
 #Merge regions if their end points are within 3 nt of each other.
 getContigRegions(nucleotide_positions, gap = 3)
-}
-\references{
-Choudhary, K., Lai, Y. H., Tran, E. J., & Aviran, S. (2019).
-dStruct: identifying differentially reactive regions from RNA
-structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
 }
 \author{
 Krishna Choudhary

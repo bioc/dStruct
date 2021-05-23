@@ -170,7 +170,8 @@ head(res_predefined_regs)
 
 The function `plotDStructurome` takes in a list of `data.frame`s with reactivities and the result table from `dStructome` to save a PDF file showing the reactivities in a region. We illustrate this with the result for the `lai2019` data. Let us plot the reactivities for the gene with the lowest FDR value. We can identify it as follows.
 ```{r}
-toPlot <- res %$% 
+toPlot <- res@elementMetadata %>%
+  data.frame() %$% 
   magrittr::extract(t, order(FDR)) %>% 
   head(., n = 1)
 

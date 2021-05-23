@@ -59,7 +59,7 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
 
   if ((quality == "auto") & min(c(reps_A, reps_B)) != 1) quality <- 0.5 else if (quality == "auto") quality <- 0.2
   if (is.null(between_combs) | is.null(within_combs)) idcombs <- getCombs(reps_A, reps_B, batches,
-                                                                         between_combs, within_combs)
+                                                                          between_combs, within_combs)
   if (is.null(between_combs)) between_combs <- idcombs$between_combs
   if (is.null(within_combs)) within_combs <- idcombs$within_combs
 
@@ -67,8 +67,8 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
   d_between <- dCombs(rdf, between_combs)
 
   to_test <- getRegions(d_within, d_between, rdf, min_length,
-                       check_signal_strength, check_nucs, check_quality,
-                       quality, evidence, signal_strength)
+                        check_signal_strength, check_nucs, check_quality,
+                        quality, evidence, signal_strength)
 
   if (is.null(to_test) | !length(to_test)) return(NULL)
 
@@ -87,19 +87,19 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
     })
 
     result <- list(regions= contigs_test, pval = result[1],
-                  del_d = result[2])
+                   del_d = result[2])
 
   } else if (!proximity_assisted) {
 
     pvals <- c()
     del_d <- c()
-    for (i in 1:nrow(contigs_test)) {
+    for (i in 1:length(contigs_test)) {
       curr_res <- tryCatch({
-        c(wilcox.test(d_within[contigs_test$Start[i]:contigs_test$Stop[i]],
-                      d_between[contigs_test$Start[i]:contigs_test$Stop[i]],
+        c(wilcox.test(d_within[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]],
+                      d_between[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]],
                       alternative = "less", paired= TRUE)$p.value,
-          median(d_between[contigs_test$Start[i]:contigs_test$Stop[i]] -
-                   d_within[contigs_test$Start[i]:contigs_test$Stop[i]],
+          median(d_between[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]] -
+                   d_within[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]],
                  na.rm = TRUE))
 
       }, error= function(e) {
@@ -111,33 +111,34 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
 
     }
 
-    contigs_test <- cbind(contigs_test, pval = pvals, del_d = del_d)
-    if (get_FDR) contigs_test <- cbind(contigs_test, FDR = p.adjust(pvals, "BH"))
+    S4Vectors::mcols(contigs_test) <- data.frame(pval = pvals,
+                                                 del_d = del_d)
+    if (get_FDR) S4Vectors::mcols(contigs_test) <- data.frame(S4Vectors::mcols(contigs_test),
+                                                              FDR = p.adjust(pvals, "BH"))
     result <- contigs_test
   } else {
 
-    proximal_contigs <- which(contigs_test$Start[-1]-
-                               contigs_test$Stop[-nrow(contigs_test)] < proximity)+1
+    proximal_contigs <- which(IRanges::start(contigs_test)[-1]-
+                                IRanges::end(contigs_test)[-length(contigs_test)] < proximity)+1
 
     if (length(proximal_contigs)) {
       proximally_tied_regs <- getContigRegions(proximal_contigs)
-      proximally_tied_regs$Start <- proximally_tied_regs$Start-1
-      proximal_contigs <- unlist(apply(proximally_tied_regs, 1,
-                                      function(x) x[1]:x[2]))
-      non_proximal <- setdiff(1:nrow(contigs_test),
-                             proximal_contigs)
+      IRanges::start(proximally_tied_regs) <- IRanges::start(proximally_tied_regs) - 1
+      proximal_contigs <- unlist(apply(data.frame(proximally_tied_regs), 1,
+                                       function(x) x[1]:x[2]))
+      non_proximal <- setdiff(1:length(contigs_test),
+                              proximal_contigs)
     } else {
-      non_proximal <- 1:nrow(contigs_test)
+      non_proximal <- 1:length(contigs_test)
     }
 
-    which_too_short <- apply(contigs_test[non_proximal, ], 1,
-                            function(x) x[2]- x[1] + 1 < proximity_defined_length)
+    which_too_short <- IRanges::width(contigs_test[non_proximal]) < proximity_defined_length
 
     pvals <- c()
     del_d <- c()
     for (i in non_proximal) {
 
-      curr_nucs <- contigs_test$Start[i]:contigs_test$Stop[i]
+      curr_nucs <- IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]
       if (length(curr_nucs) < proximity_defined_length) {
         curr_res <- c(NA, NA)
       } else {
@@ -159,20 +160,22 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
     }
 
     if (length(proximal_contigs)) {
-      proximity_defined_regs <- list(Start = c(), Stop = c())
-      for (i in 1:nrow(proximally_tied_regs)) {
-        curr <- contigs_test[proximally_tied_regs$Start[i]:proximally_tied_regs$Stop[i], ]
-        curr_nucs <- unlist(apply(curr, 1,
-                                 function(x) x[1]:x[2]))
+
+      proximity_defined_regs <- IRanges::IRanges()
+
+      for (i in 1:length(proximally_tied_regs)) {
+        curr <- contigs_test[IRanges::start(proximally_tied_regs)[i]:IRanges::end(proximally_tied_regs)[i]]
+        curr_nucs <- unlist(apply(data.frame(curr), 1,
+                                  function(x) x[1]:x[2]))
         curr_length <- max(curr_nucs) - min(curr_nucs) + 1
 
         if (curr_length >= proximity_defined_length) {
           curr_res <- tryCatch({
             c(wilcox.test(d_within[curr_nucs],
-                        d_between[curr_nucs],
-                        alternative = "less", paired= TRUE)$p.value,
-            median(d_between[curr_nucs] - d_within[curr_nucs],
-                   na.rm = TRUE))
+                          d_between[curr_nucs],
+                          alternative = "less", paired= TRUE)$p.value,
+              median(d_between[curr_nucs] - d_within[curr_nucs],
+                     na.rm = TRUE))
 
           }, error= function(e) {
             #Place holder for those transcripts that can't be tested due to insufficient data points.
@@ -182,20 +185,27 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
           curr_res <- c(NA, NA)
         }
 
-        proximity_defined_regs$Start <- c(proximity_defined_regs$Start,
-                                         paste(curr$Start, collapse = ","))
-        proximity_defined_regs$Stop <- c(proximity_defined_regs$Stop,
-                                        paste(curr$Stop, collapse = ","))
+        curr_ir <- IRanges::IRanges(start = min(IRanges::start(curr)),
+                                    end = max(IRanges::end(curr)))
+
+        S4Vectors::mcols(curr_ir) <- data.frame(subStart = paste(IRanges::start(curr),
+                                                                 collapse = ","),
+                                                subEnd = paste(IRanges::end(curr),
+                                                               collapse = ","))
+
+        proximity_defined_regs <- c(proximity_defined_regs, curr_ir)
         pvals <- c(pvals, curr_res[1])
         del_d <- c(del_d, curr_res[2])
       }
 
-      contigs_test <- rbind(contigs_test[non_proximal, ],
-                           as.data.frame(proximity_defined_regs))
+      contigs_test <- c(contigs_test[non_proximal, ],
+                        proximity_defined_regs)
     }
 
-    contigs_test <- cbind(contigs_test, pval = pvals, del_d = del_d)
-    if (get_FDR) contigs_test <- cbind(contigs_test, FDR = p.adjust(pvals, "BH"))
+    S4Vectors::mcols(contigs_test) <- data.frame(S4Vectors::mcols(contigs_test),
+                                                 pval = pvals, del_d = del_d)
+    if (get_FDR) S4Vectors::mcols(contigs_test) <- data.frame(S4Vectors::mcols(contigs_test),
+                                                              FDR = p.adjust(pvals, "BH"))
     result <- contigs_test
   }
 

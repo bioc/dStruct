@@ -10,6 +10,6 @@ test_that("Previous result is reproduced.", {
   regs <- getContigRegions(getRegions(dWithin,
                               dBetween, lai2019[["YAL042W"]], min_length = 21))
 
-  expect_true(all(regs$Start == c(19, 530, 583, 1122, 1187)))
-  expect_true(all(regs$Stop == c(146, 553, 632, 1177, 1218)))
+  expect_true(all(IRanges::start(regs) == c(19, 530, 583, 1122, 1187)))
+  expect_true(all(IRanges::end(regs) == c(146, 553, 632, 1177, 1218)))
 })

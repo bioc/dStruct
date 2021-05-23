@@ -14,7 +14,9 @@ Imports:
     ggplot2,
     purrr,
     reshape2,
-    parallel
+    parallel,
+    IRanges,
+    S4Vectors
 License: GPL (>= 2)
 biocViews: StatisticalMethod, StructuralPrediction, Sequencing, Software
 URL: https://github.com/dataMaster-Kris/dStruct

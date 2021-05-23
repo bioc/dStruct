@@ -67,7 +67,7 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
   }
 
   if (is.null(between_combs) | is.null(within_combs)) idcombs <- getCombs(reps_A, reps_B, batches,
-                                                                         between_combs, within_combs)
+                                                                          between_combs, within_combs)
   if (is.null(between_combs)) between_combs <- idcombs$between_combs
   if (is.null(within_combs)) within_combs <- idcombs$within_combs
 
@@ -75,8 +75,8 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
 
     result <- parallel::mcmapply(function(x) {
       dStructGuided(x, reps_A, reps_B, batches,
-                     within_combs, between_combs, check_quality,
-                     quality, evidence)
+                    within_combs, between_combs, check_quality,
+                    quality, evidence)
     }, rl, mc.cores=processes)
 
     pvals <- result[1, ]
@@ -86,6 +86,8 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
     res_df <- data.frame(t = names(rl), pval = pvals, del_d = del_d)
     res_df <- subset(res_df, !is.na(pval))
     res_df$FDR <- p.adjust(res_df$pval, "BH")
+
+    rownames(res_df) <- NULL
 
   } else if (method == "denovo") {
 
@@ -99,36 +101,56 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
     }, rl, mc.cores=processes, SIMPLIFY = FALSE)
 
     if (ind_regions) {
-      res_df <- data.frame(t= NA, Start= NA, Stop = NA, pval= NA, del_d = NA)
+      res_df <- IRanges::IRanges()
       for (i in 1:length(result)) {
         if (is.null(result[[i]])) next
-        res_df <- rbind(res_df, data.frame(t= names(result)[i], result[[i]]))
+        this_res <- result[[i]]
+        S4Vectors::mcols(this_res) <- data.frame(S4Vectors::mcols(this_res),
+                                                 t = names(result)[i])
+        res_df <- c(res_df, this_res)
       }
 
-      res_df <- res_df[-1, ]
-      res_df$FDR <- p.adjust(res_df$pval, "BH")
+      S4Vectors::mcols(res_df) <- data.frame(S4Vectors::mcols(res_df),
+                                             FDR = p.adjust(res_df@elementMetadata$pval,
+                                                            "BH"))
     } else {
-      res_df <- data.frame(t= NA, Start= NA, Stop = NA)
+      res_df <- IRanges::IRanges()
       pvals_and_del_d <- data.frame(t= NA, pval= NA, del_d = NA)
       for (i in 1:length(result)) {
         if (is.null(result[[i]])) next
-        pvals_and_del_d <- rbind(pvals, data.frame(t =  names(result)[i], pval = result[[i]]$pval,
-                                        del_d = result[[i]]$del_d), stringsAsFactors= FALSE)
-        res_df <- rbind(res_df, data.frame(t= names(result)[i], result[[i]]$regions))
+        pvals_and_del_d <- rbind(pvals_and_del_d,
+                                 data.frame(t =  names(result)[i], pval = result[[i]]$pval,
+                                            del_d = result[[i]]$del_d), stringsAsFactors= FALSE)
+        this_res <- result[[i]]$regions
+        S4Vectors::mcols(this_res) <- data.frame(t = rep(names(result)[i],
+                                                         length(this_res)))
+        res_df <- c(res_df, this_res)
       }
 
       pvals_and_del_d <- pvals_and_del_d[-1, ]
-      res_df <- res_df[-1, ]
 
       pvals_and_del_d$FDR <- p.adjust(pvals_and_del_d$pval, "BH")
 
-      res_df$pval <- apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$pval)
-      res_df$del_d <- apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$del_d)
-      res_df$FDR <- apply(res_df, 1, function(x) subset(pvals_and_del_d, t == as.character(x[1]))$FDR)
+      res_df_with_pvals <- IRanges::IRanges()
+      for (i in unique(res_df@elementMetadata$t)) {
+        this_res <- res_df[res_df@elementMetadata$t == i]
+        S4Vectors::mcols(this_res) <- data.frame(t = rep(i, length(this_res)),
+                                                 pval = rep(subset(pvals_and_del_d,
+                                                                   t == i)$pval,
+                                                            length(this_res)),
+                                                 del_d = rep(subset(pvals_and_del_d,
+                                                                    t == i)$del_d,
+                                                             length(this_res)),
+                                                 FDR = rep(subset(pvals_and_del_d,
+                                                                  t == i)$FDR,
+                                                           length(this_res)))
+        res_df_with_pvals <- c(res_df_with_pvals, this_res)
+      }
+
+      res_df <- res_df_with_pvals
     }
   }
 
-  rownames(res_df) <- NULL
   return(res_df)
 
 }
