@@ -41,7 +41,7 @@ Users can specify the number of cores to be used by `dStructome` for parallel pr
 
 For guided discovery, data frame with reactivities should contain only information for regions of interest. There should be a separate data frame for each region. Let one such data frame be `reac_region1`. If there are say, 3 samples of each group, guided discovery can be performed as follows.
 
-`dStruct.guided(reac_region1, reps_A = 3, reps_B = 3)`
+`dStructGuided(reac_region1, reps_A = 3, reps_B = 3)`
 
 All the data frames can also be combined in a single list object, say `rlist`. Then, guided discovery could be done in parallel for all regions using the following command.
 

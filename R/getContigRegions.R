@@ -4,12 +4,12 @@
 #'
 #' @param x A vector of integers.
 #' @param gap Include gaps in the ranges if they are shorter than or equal to this length.
-#' @return Dataframe storing start and stop sites of continguous regions.
+#' @return IRanges object storing start and end sites of continguous regions.
 #'
 #' @author Krishna Choudhary
 #'
 #' @examples
-#' #Convert an integer vector of nucleotide positions to a data frame containing the coordinates of contiguous regions.
+#' #Convert an integer vector of nucleotide positions to an IRanges object containing the coordinates of contiguous regions.
 #' nucleotide_positions <- c(1, 3, 2, 8, 4:7, 11:20)
 #' getContigRegions(nucleotide_positions)
 #'

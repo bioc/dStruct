@@ -16,7 +16,7 @@ plotDStructurome(
 \arguments{
 \item{rl}{List of dataframes of reactivities for each sample.}
 
-\item{diff_regions}{Dataframe of regions with significance of differentially reactivity.}
+\item{diff_regions}{Output from dStruct or dStructGuided containing coordinates of regions with significance of differentially reactivity.}
 
 \item{outfile}{The name for pdf file which will be saved.}
 

@@ -1,2 +1,12 @@
 Changes in version 0.99.0 (2021-04-07)
 + Submitted to Bioconductor
+
+Changes in version 0.99.1 (2021-04-11)
++ Fixed errors and warnings from checks by bioc-issue-bot.
+
+Changes in version 0.99.2 (2021-05-22)
++ Revised to address comments by the Bioconductor reviewer.
++ dStruct now uses the IRanges object from Bioconductor.
++ All function names follow camel case.
++ More descriptions of functions.
++ Added a test to check validity of code when running dStruct in the proximity_assisted mode.

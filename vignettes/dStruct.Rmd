@@ -50,11 +50,11 @@ library(tidyverse)
 
 dStruct is broadly applicable to technologies for RNA structurome profiling, e.g., SHAPE-Seq, Structure-Seq, PARS, SHAPE-MaP, etc. The raw data from these technologies are reads from DNA sequencing platforms. The start sites of read alignment coordinates are adjacent to sites of reactions of ribonucleotides with a structure-probing reagent. For some technologies, the sites of mismatches between reads and the reference genome sequences are sites of reactions, e.g., SHAPE-MaP and DMS-MaPseq. The counts of reads mapping to the nucleotides of an RNA should be tallied and converted to reactivities, which represent the degrees of reactions. The specific steps to process data from sequencing reads to reactivities depend on the structurome profiling technology. For a review on structurome profiling technologies and methods for assessing reactivities, see @choudhary2017comparative. 
 
-dStruct takes nucleotide-level normalized reactivities of one or multiple RNAs as input. In the following, we assume that the user has processed the raw reads to obtain normalized reactivities for their RNAs of interest. 
+dStruct takes nucleotide-level normalized reactivities of one or multiple RNAs as input. Currently, the preffered normalization method depends on the RNA structurome profiling technology. We have provided an implementation of the 2-8 % method for normalization (@low2010shape) via a function named `twoEightNormalize`, which is commonly used to normalize data from technologies such as SHAPE-Seq, Structure-Seq, etc. In the following, we assume that the user has processed the raw reads to obtain normalized reactivities for their RNAs of interest. 
 
 # Input data
 
-The input data to dStruct is a `list` object. Each element of the `list` should be a `data.frame` containing normalized reactivities. Currently, the preffered normalization method depends on the RNA structurome profiling technology. We have provided an implementation of the 2-8 % method for normalization (@low2010shape) via a function named `twoEightNormalize`, which is commonly used to normalize data from technologies such as SHAPE-Seq, Structure-Seq, etc.  
+The input data to dStruct is a `list` object. Each element of the `list` should be a `data.frame` containing normalized reactivities.  
 
 ## Load inbuilt sample data
 
@@ -114,7 +114,7 @@ dStruct(rdf = lai2019[["YAL042W"]],
 ```
 **Input arguments.** The arguments `rdf`, `reps_A` and `reps_B` of the `dStruct` function are required while the others are optional. These take in a `data.frame` with reactivity values, the number of samples of group A (group of wild-type *S. cerevisiae* samples), and the number of samples of group B (group of *dbp2$\Delta$ S. cerevisiae* samples), respectively. Set `batches` to `TRUE` if the samples were prepared in batches with a paired experiment design, i.e., two samples in each batch -- one of each group. `min_length` is the minimum length of a differential region that `dStruct` would search for. For the Lai et al. dataset, we set it to 21 nt because that is the putative length of regions bound by Dbp2, which was the RNA helicase under investigation in their study. As described in our manuscript, `dStruct` performs differential analysis by regrouping the samples in homogeneous and heterogeneous groups and assessing the dissimilarity of reactivity profiles in these groups. The homogeneous groups comprise of samples from the same original group (e.g., A or B) while the heterogeneous groups comprise of samples from both A and B, respectively (see @choudhary2019dstruct for details). Users can explicitly specify these groupings to the `dStruct` function as shown in the example above. Otherwise, `dStruct` would automatically generate the homogeneous and heterogeneous groups. Setting `ind_regions` to `TRUE` requires test for significance of difference in reactivity patterns in individual regions. If it is set to `FALSE` all regions identified within a transcript are tested collectively to obtain significance scores at the level of a transcript. 
 
-**Output.** Columns of the result table give the start (column titled *Start*) and end (column titled *Stop*) coordinates of the tested regions from the transcript whose reactivity profile is input, *p*-values, medians of nucleotide-wise differences of the between-group and within-group *d* scores (column titled *del_d*), and the FDR-adjusted *p*-values.
+**Output.** The output is an `IRanges` object with columns giving the start (column titled *start*) and end (column titled *end*) coordinates of the tested regions from the transcript whose reactivity profile is input, *p*-values, medians of nucleotide-wise differences of the between-group and within-group *d* scores (column titled *del_d*), and the FDR-adjusted *p*-values.
 
 Alternatively, all transcripts in a reactivity list can be analyzed in one step using the wrapper function `dStructome`. By default, `dStructome` spawns multiple processes, which speeds up the analysis by processing transcripts in parallel. This behavior can be changed using the argument `processes` as shown in the following code chunk.
 ```{r, warning=FALSE}
@@ -123,7 +123,7 @@ res <- dStructome(lai2019, 3, 2, batches= TRUE, min_length = 21,
                   within_combs = data.frame(c("A1", "A2", "A3")),
                   ind_regions = TRUE, processes = 1)
 ```
-This returns a table with the coordinates of regions in transcripts with the corresponding *p*- and FDR-values.
+This returns the coordinates of regions in transcripts with the corresponding *p*- and FDR-values.
 ```{r}
 head(res)
 ```
@@ -168,7 +168,7 @@ head(res_predefined_regs)
 
 # Visualizing results
 
-The function `plotDStructurome` takes in a list of `data.frame`s with reactivities and the result table from `dStructome` to save a PDF file showing the reactivities in a region. We illustrate this with the result for the `lai2019` data. Let us plot the reactivities for the gene with the lowest FDR value. We can identify it as follows.
+The function `plotDStructurome` takes in a list of `data.frame`s with reactivities and the results from `dStructome` to save a PDF file showing the reactivities in a region. We illustrate this with the result for the `lai2019` data. Let us plot the reactivities for the gene with the lowest FDR value. We can identify it as follows.
 ```{r}
 toPlot <- res@elementMetadata %>%
   data.frame() %$% 

@@ -5,7 +5,7 @@
 #' a PDF file with detailed visualizations of reactivities for all differential regions.
 #'
 #' @param rl List of dataframes of reactivities for each sample.
-#' @param diff_regions Dataframe of regions with significance of differentially reactivity.
+#' @param diff_regions Output from dStruct or dStructGuided containing coordinates of regions with significance of differentially reactivity.
 #' @param outfile The name for pdf file which will be saved.
 #' @param fdr FDR threshold for plotted regions.
 #' @param ylim Y-axis limits for plots.
