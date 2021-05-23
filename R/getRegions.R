@@ -24,6 +24,7 @@
 #' structurome profiling data. \emph{Genome biology}, 20(1), 1-26.
 #'
 #' @export
+#' @importFrom utils tail
 getRegions <- function(d_within, d_spec, rdf, min_length= 11,
                        check_signal_strength = TRUE, check_nucs = TRUE, check_quality = TRUE,
                        quality = 0.5, evidence = 0, signal_strength = 0.1) {
@@ -71,12 +72,12 @@ getRegions <- function(d_within, d_spec, rdf, min_length= 11,
       if (all(trim_reac)) next
 
       start <- start + which(!trim_reac)[1] - 1
-      end <- end - length(trim_reac) + tail(which(!trim_reac), 1)
+      end <- end - length(trim_reac) + utils::tail(which(!trim_reac), 1)
 
       trim_reac <- is.na(d_within[start:end]-d_spec[start:end])
       if (all(trim_reac)) next
       start <- start + which(!trim_reac)[1] - 1
-      end <- end - length(trim_reac) + tail(which(!trim_reac), 1)
+      end <- end - length(trim_reac) + utils::tail(which(!trim_reac), 1)
     }
 
     if (end - start + 1 < min_length) next

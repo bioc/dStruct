@@ -34,6 +34,7 @@
 #' #Run dStruct in the guided mode on first region in wan2014.
 #' dStructGuided(wan2014[[1]], reps_A = 2, reps_B = 1)
 #' @export
+#' @importFrom stats median wilcox.test
 dStructGuided <- function(rdf, reps_A, reps_B, batches = FALSE,
                            within_combs = NULL, between_combs= NULL, check_quality = TRUE,
                            quality = "auto", evidence = 0) {
@@ -48,12 +49,12 @@ dStructGuided <- function(rdf, reps_A, reps_B, batches = FALSE,
   d_between <- dCombs(rdf, between_combs)
 
   if (mean(d_within, na.rm = TRUE) > quality) return(c(NA, NA))
-  if (median(d_between - d_within, na.rm = TRUE) < evidence) return(c(NA, NA))
+  if (stats::median(d_between - d_within, na.rm = TRUE) < evidence) return(c(NA, NA))
 
   result <- tryCatch({
-    c(pval = wilcox.test(d_within, d_between,
+    c(pval = stats::wilcox.test(d_within, d_between,
                   alternative = "less", paired= TRUE)$p.value,
-      del_d = median(d_between - d_within, na.rm = TRUE)
+      del_d = stats::median(d_between - d_within, na.rm = TRUE)
     )
   }, error= function(e) {
     #Place holder for those transcripts that can't be tested due to error.

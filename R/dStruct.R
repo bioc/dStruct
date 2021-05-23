@@ -50,6 +50,7 @@
 #'     within_combs = data.frame(c("A1", "A2", "A3")),
 #'     ind_regions = TRUE)
 #' @export
+#' @importFrom stats median p.adjust wilcox.test
 dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
                     check_signal_strength = TRUE, check_nucs = TRUE, check_quality = TRUE,
                     quality = "auto", evidence = 0, signal_strength = 0.1,
@@ -77,9 +78,9 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
   if (!ind_regions & !proximity_assisted) {
 
     result <- tryCatch({
-      c(wilcox.test(d_within[to_test], d_between[to_test],
+      c(stats::wilcox.test(d_within[to_test], d_between[to_test],
                     alternative = "less", paired= TRUE)$p.value,
-        median(d_between[to_test] - d_within[to_test],
+        stats::median(d_between[to_test] - d_within[to_test],
                na.rm = TRUE))
     }, error= function(e) {
       #Place holder for those transcripts that can't be tested due to insufficient data points.
@@ -95,10 +96,10 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
     del_d <- c()
     for (i in 1:length(contigs_test)) {
       curr_res <- tryCatch({
-        c(wilcox.test(d_within[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]],
+        c(stats::wilcox.test(d_within[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]],
                       d_between[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]],
                       alternative = "less", paired= TRUE)$p.value,
-          median(d_between[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]] -
+          stats::median(d_between[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]] -
                    d_within[IRanges::start(contigs_test)[i]:IRanges::end(contigs_test)[i]],
                  na.rm = TRUE))
 
@@ -114,7 +115,7 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
     S4Vectors::mcols(contigs_test) <- data.frame(pval = pvals,
                                                  del_d = del_d)
     if (get_FDR) S4Vectors::mcols(contigs_test) <- data.frame(S4Vectors::mcols(contigs_test),
-                                                              FDR = p.adjust(pvals, "BH"))
+                                                              FDR = stats::p.adjust(pvals, "BH"))
     result <- contigs_test
   } else {
 
@@ -143,10 +144,10 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
         curr_res <- c(NA, NA)
       } else {
         curr_res <- tryCatch({
-          c(wilcox.test(d_within[curr_nucs],
+          c(stats::wilcox.test(d_within[curr_nucs],
                         d_between[curr_nucs],
                         alternative = "less", paired= TRUE)$p.value,
-            median(d_between[curr_nucs] - d_within[curr_nucs],
+            stats::median(d_between[curr_nucs] - d_within[curr_nucs],
                    na.rm = TRUE))
 
         }, error= function(e) {
@@ -171,10 +172,10 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
 
         if (curr_length >= proximity_defined_length) {
           curr_res <- tryCatch({
-            c(wilcox.test(d_within[curr_nucs],
+            c(stats::wilcox.test(d_within[curr_nucs],
                           d_between[curr_nucs],
                           alternative = "less", paired= TRUE)$p.value,
-              median(d_between[curr_nucs] - d_within[curr_nucs],
+              stats::median(d_between[curr_nucs] - d_within[curr_nucs],
                      na.rm = TRUE))
 
           }, error= function(e) {
@@ -205,7 +206,7 @@ dStruct <- function(rdf, reps_A, reps_B, batches = FALSE, min_length = 11,
     S4Vectors::mcols(contigs_test) <- data.frame(S4Vectors::mcols(contigs_test),
                                                  pval = pvals, del_d = del_d)
     if (get_FDR) S4Vectors::mcols(contigs_test) <- data.frame(S4Vectors::mcols(contigs_test),
-                                                              FDR = p.adjust(pvals, "BH"))
+                                                              FDR = stats::p.adjust(pvals, "BH"))
     result <- contigs_test
   }
 

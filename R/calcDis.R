@@ -25,8 +25,9 @@
 #' calcDis(rnorm(10, 1, 0.2))
 #' calcDis(rnorm(10, 1, 0.6))
 #' @export
+#' @importFrom stats sd
 calcDis <- function(x) {
-  dScore <- function(y) 2*(atan(abs(sd(y)/mean(y))))/pi
+  dScore <- function(y) 2*(atan(abs(stats::sd(y)/mean(y))))/pi
   if (is.numeric(x)) return(dScore(x))
   return(apply(x, 1, function(y) dScore(y)))
 }

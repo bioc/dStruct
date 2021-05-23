@@ -49,6 +49,7 @@
 #' #Run dStruct in guide discovery mode for all the transcript regions in this data in one step.
 #' dStructome(wan2014, reps_A = 2, reps_B = 1, method = "guided", processes = 1)
 #' @export
+#' @importFrom stats p.adjust
 dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
                        check_signal_strength = TRUE, check_nucs = TRUE, check_quality = TRUE,
                        quality = "auto", evidence = 0, signal_strength = 0.1,
@@ -84,8 +85,8 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
     del_d <- result[2, ]
     names(del_d) <- NULL
     res_df <- data.frame(t = names(rl), pval = pvals, del_d = del_d)
-    res_df <- subset(res_df, !is.na(pval))
-    res_df$FDR <- p.adjust(res_df$pval, "BH")
+    res_df <- subset(res_df, !is.na(res_df$pval))
+    res_df$FDR <- stats::p.adjust(res_df$pval, "BH")
 
     rownames(res_df) <- NULL
 
@@ -111,7 +112,7 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
       }
 
       S4Vectors::mcols(res_df) <- data.frame(S4Vectors::mcols(res_df),
-                                             FDR = p.adjust(res_df@elementMetadata$pval,
+                                             FDR = stats::p.adjust(S4Vectors::mcols(res_df)$pval,
                                                             "BH"))
     } else {
       res_df <- IRanges::IRanges()
@@ -129,11 +130,11 @@ dStructome <- function(rl, reps_A, reps_B, batches= FALSE, min_length = 11,
 
       pvals_and_del_d <- pvals_and_del_d[-1, ]
 
-      pvals_and_del_d$FDR <- p.adjust(pvals_and_del_d$pval, "BH")
+      pvals_and_del_d$FDR <- stats::p.adjust(pvals_and_del_d$pval, "BH")
 
       res_df_with_pvals <- IRanges::IRanges()
-      for (i in unique(res_df@elementMetadata$t)) {
-        this_res <- res_df[res_df@elementMetadata$t == i]
+      for (i in unique(S4Vectors::mcols(res_df)$t)) {
+        this_res <- res_df[S4Vectors::mcols(res_df)$t == i]
         S4Vectors::mcols(this_res) <- data.frame(t = rep(i, length(this_res)),
                                                  pval = rep(subset(pvals_and_del_d,
                                                                    t == i)$pval,

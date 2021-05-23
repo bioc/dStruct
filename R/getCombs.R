@@ -23,6 +23,7 @@
 #' #Get heterogeneous and homogeneous set combinations of samples when there are 2 samples of group A and 1 of group B.
 #' getCombs(2, 1)
 #' @export
+#' @importFrom utils combn
 getCombs <- function(reps_A, reps_B, batches = FALSE, between_combs= NULL, within_combs= NULL) {
   if ((is.null(within_combs) & !is.null(between_combs)) | (is.null(between_combs) & !is.null(within_combs))) stop("Homogeneous and heterogeneous sets should either both be null or both be specified with equal number of samples in each set.")
   if (!is.null(within_combs)) if (nrow(between_combs)!=nrow(within_combs)) stop("Heterogeneous and homogeneous sets should have equal number of samples.")
@@ -36,7 +37,7 @@ getCombs <- function(reps_A, reps_B, batches = FALSE, between_combs= NULL, withi
 
   }
 
-  all_combs <- combn(c(paste0("A", 1:reps_A), paste0("B", 1:reps_B)),
+  all_combs <- utils::combn(c(paste0("A", 1:reps_A), paste0("B", 1:reps_B)),
                     set_membership)
 
 

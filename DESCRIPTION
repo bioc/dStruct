@@ -16,7 +16,8 @@ Imports:
     reshape2,
     parallel,
     IRanges,
-    S4Vectors
+    S4Vectors,
+    rlang
 License: GPL (>= 2)
 biocViews: StatisticalMethod, StructuralPrediction, Sequencing, Software
 URL: https://github.com/dataMaster-Kris/dStruct

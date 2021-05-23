@@ -36,19 +36,22 @@
 #'     fdr = 0.05,
 #'     ylim = c(-0.05, 3))
 #' @export
+#' @importFrom grDevices  pdf dev.off
+#' @importFrom rlang .data
 plotDStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.05, 3),
                               del_d_cutoff = 0.01) {
   diff_regions <- data.frame(diff_regions)
-  diff_regions <- subset(diff_regions, FDR < fdr, del_d > del_d_cutoff)
+  diff_regions <- subset(diff_regions, diff_regions$FDR < fdr &
+                           diff_regions$del_d > del_d_cutoff)
   diff_t <- unique(diff_regions$t)
 
-  pdf(paste0(outfile, ".pdf"), width=7,height=6)
+  grDevices::pdf(paste0(outfile, ".pdf"), width=7,height=6)
   for (i in 1:length(diff_t)) {
     curr_t <- as.character(diff_t[i])
     curr_regs <- subset(diff_regions, t == curr_t)
     curr_df <- rl[[curr_t]]
 
-    print(ggplot2::ggplot(data=data.frame(x=0,y=0), ggplot2::aes(x=x, y=y)) +
+    print(ggplot2::ggplot(data=data.frame(x=0,y=0), ggplot2::aes(x=.data$x, y=.data$y)) +
             ggplot2::annotate("text", x = 4, y = 25,
                               label = curr_t) +
             ggplot2::theme_classic()+
@@ -69,10 +72,12 @@ plotDStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.
     dat <- data.frame(curr_df, n = 1:nrow(curr_df))
     dat <- reshape2::melt(dat, id.vars = "n")
 
-    print(ggplot2::ggplot(dat, ggplot2::aes(x= n, y= value)) +
-            ggplot2::geom_bar(stat="identity") +ggplot2::facet_grid(variable~.)+
+    print(ggplot2::ggplot(dat, ggplot2::aes(x= .data$n, y= .data$value)) +
+            ggplot2::geom_bar(stat="identity") +ggplot2::facet_grid(.data$variable~.)+
             ggplot2::coord_cartesian(ylim=ylim) +
-            ggplot2::geom_rect(ggplot2::aes(NULL, NULL, xmin=start-0.5, xmax=end+0.5),
+            ggplot2::geom_rect(ggplot2::aes(NULL, NULL,
+                                            xmin=.data$start-0.5,
+                                            xmax=.data$end+0.5),
                                ymin= -Inf, ymax= Inf, data= curr_regs, fill= "red",
                                color= NA, alpha= 0.3) +
             ggplot2::theme(strip.text = ggplot2::element_text(size = 6),
@@ -86,7 +91,7 @@ plotDStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.
                        n = curr_regs$start[r]:curr_regs$end[r])
       dat <- reshape2::melt(dat, id.vars = "n")
 
-      print(ggplot2::ggplot(dat, ggplot2::aes(x= n, y= value)) +
+      print(ggplot2::ggplot(dat, ggplot2::aes(x= .data$n, y= .data$value)) +
               ggplot2::geom_bar(stat="identity") +ggplot2::facet_grid(variable~.)+
               ggplot2::coord_cartesian(ylim=ylim) +
               ggplot2::theme(strip.text = ggplot2::element_text(size = 6),
@@ -96,7 +101,7 @@ plotDStructurome <- function(rl, diff_regions, outfile, fdr = 0.05, ylim = c(-0.
     }
 
   }
-  dev.off()
+  grDevices::dev.off()
   return()
 }
 
