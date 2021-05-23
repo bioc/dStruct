@@ -10,3 +10,6 @@ Changes in version 0.99.2 (2021-05-22)
 + All function names follow camel case.
 + More descriptions of functions.
 + Added a test to check validity of code when running dStruct in the proximity_assisted mode.
+
+Changes in version 0.99.3 (2021-05-23)
++ Ensured that all global variables are well-defined in the namespace.

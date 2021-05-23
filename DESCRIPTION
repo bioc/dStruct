@@ -1,7 +1,7 @@
 Package: dStruct
 Type: Package
 Title: Identifying differentially reactive regions from RNA structurome profiling data
-Version: 0.99.2
+Version: 0.99.3
 Depends: R (>= 4.1)
 Authors@R: c(
     person("Krishna", "Choudhary", role=c("aut", "cre"), 
@@ -17,7 +17,10 @@ Imports:
     parallel,
     IRanges,
     S4Vectors,
-    rlang
+    rlang,
+    grDevices,
+    stats,
+    utils
 License: GPL (>= 2)
 biocViews: StatisticalMethod, StructuralPrediction, Sequencing, Software
 URL: https://github.com/dataMaster-Kris/dStruct
