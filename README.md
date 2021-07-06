@@ -1,10 +1,12 @@
-# dStruct: Method for identifying differential reactive regions from RNA structurome profiling data.
+# dStruct: method for identifying differential reactive regions from RNA structurome profiling data.
 
 dStruct is a statistical method for identifying regions that display altered reactivity patterns between two groups of samples. It can perform *de novo* discovery or identify regions from a list provided by the user. The latter case is called *guided discovery*. dStruct is compatible with a diverse range of structure profiling technologies, accounts for biological variation and controls the false discovery rate in a multiple testing context.
 
 ## Getting started
 
 To start with, download and install the latest versions of [R](https://cran.r-project.org/) and [RStudio](https://www.rstudio.com/products/rstudio/).
+
+**To install via Bioconductor, please visit [https://bioconductor.org/packages/devel/bioc/html/dStruct.html](https://bioconductor.org/packages/devel/bioc/html/dStruct.html)**
 
 dStruct can be installed directly from source. First, install `devtools` by executing the following in RStudio.
 
@@ -17,9 +19,6 @@ Next, in RStudio run the following.
 This should install the package in R. Check by executing the following command.
 
 `library(dStruct)`
-
-In the future, we plan to make dStruct available through Bioconductor.
-
 
 ***
 
