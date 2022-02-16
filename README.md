@@ -6,7 +6,7 @@ dStruct is a statistical method for identifying regions that display altered rea
 
 To start with, download and install the latest versions of [R](https://cran.r-project.org/) and [RStudio](https://www.rstudio.com/products/rstudio/).
 
-**To install via Bioconductor, please visit [https://bioconductor.org/packages/devel/bioc/html/dStruct.html](https://bioconductor.org/packages/devel/bioc/html/dStruct.html)**
+**To install via Bioconductor, please visit [http://www.bioconductor.org/packages/release/bioc/html/dStruct.html](http://www.bioconductor.org/packages/release/bioc/html/dStruct.html)**
 
 dStruct can be installed directly from source. First, install `devtools` by executing the following in RStudio.
 
