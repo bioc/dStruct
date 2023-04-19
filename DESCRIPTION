@@ -32,6 +32,7 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
+    tidyverse,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
