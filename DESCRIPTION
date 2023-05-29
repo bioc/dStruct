@@ -8,7 +8,7 @@ Authors@R: c(
         email="kchoudhary@ucdavis.edu", comment = c(ORCID = "0000-0002-7966-1527")),
     person("Sharon", "Aviran", role=c("aut"), 
         email="saviran@ucdavis.edu", comment = c(ORCID = "0000-0003-1872-9820")))
-Description: dStruct identifies differentially reactive regions from RNA structurome profiling data. dStruct is compatible with a broad range of structurome profiling technologies, e.g., SHAPE-MaP, DMS-MaPseq, Structure-Seq, SHAPE-Seq, etc. See Choudhary et al, Genome Biology, 2019 for the underlying method.
+Description: dStruct identifies differentially reactive regions from RNA structurome profiling data. dStruct is compatible with a broad range of structurome profiling technologies, e.g., SHAPE-MaP, DMS-MaPseq, Structure-Seq, SHAPE-Seq, etc. See Choudhary et al., Genome Biology, 2019 for the underlying method.
 Imports:
     zoo,
     ggplot2,
